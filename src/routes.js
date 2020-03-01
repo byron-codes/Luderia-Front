@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Profiler } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -20,6 +20,7 @@ import Dashboard from "./screens/Dashboard";
 import Login from "./screens/Login";
 import SalesClient from "./screens/SalesClient";
 import Sale from "./screens/Sale";
+import Profile from "./screens/Profile";
 
 
 export default props => (
@@ -39,6 +40,7 @@ export default props => (
       <Route path="/admin/accessories" component={Accessories} exact></Route>
       <Route path="/admin/accessories/list" component={AccessoriesList} exact></Route>
       <Route path="/sale" component={Sale} exact></Route>
+      <Route path="/profile" component={Profile} exact></Route>
       <Redirect from="*" to="/404"></Redirect>
     </Switch>
   </Router>
