@@ -17,6 +17,8 @@ import CouponList from "./screens/CouponList";
 import Accessories from "./screens/Accessories";
 import AccessoriesList from "./screens/AccessoriesList";
 import Dashboard from "./screens/Dashboard";
+import Login from "./screens/Login";
+import SalesClient from "./screens/SalesClient";
 
 export default props => (
   <Router>
@@ -27,6 +29,8 @@ export default props => (
       <Route path="/cart" component={Cart} exact></Route>
       <Route path="/cart/card" component={BuyCard} exact></Route>
       <Route path="/cart/address" component={BuyAddress} exact></Route>
+      <Route path="/login" component={Login} exact></Route>
+      <Route path="/sales" component={SalesClient} exact></Route>
       <Route path="/admin/dashboard" component={Dashboard} exact></Route>
       <Route path="/admin/coupon" component={Coupon} exact></Route>
       <Route path="/admin/coupon/list" component={CouponList} exact></Route>

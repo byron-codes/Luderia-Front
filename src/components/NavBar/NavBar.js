@@ -1,20 +1,13 @@
 import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-
 import "../../imports";
 import Container from "../Layout/Container";
-import { Row } from "react-bootstrap";
-import Grid from "../Layout/Grid";
 
 export default props => (
-  <Navbar bg="dark" variant="dark" fixed="top">
+  <Navbar className="bg-marsala" variant="dark" fixed="top">
     <Navbar.Brand href="#home">
-      <i className="fas fa-beer"></i>
+      <i className="fas fa-dice-d20"></i>
     </Navbar.Brand>
     <Nav className="mr-auto">
       <Nav.Link href="#home">Jogos</Nav.Link>
@@ -45,7 +38,12 @@ export default props => (
           aria-expanded="false"
         >
           <i className="fas fa-shopping-cart" style={{ fontSize: "24px" }}></i>
-          <span className="badge badge-info navbar-badge" style={{right: "-10px", top: "0px"}}>3</span>
+          <span
+            className="badge badge-info navbar-badge"
+            style={{ right: "-10px", top: "0px" }}
+          >
+            3
+          </span>
         </a>
       </li>
       <li className="nav-item dropdown">

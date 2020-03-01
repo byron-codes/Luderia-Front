@@ -6,7 +6,7 @@ import NavBar from "./components/NavBar/NavBar";
 import Carousel from "react-bootstrap/Carousel";
 import Card from "./components/Card/Card";
 import {
-  faDiceD20,
+  faDice,
   faHatWizard,
   faPuzzlePiece
 } from "@fortawesome/free-solid-svg-icons";
@@ -45,7 +45,7 @@ export default props => (
     <Container class="mt-5">
       <Row>
         <Card name="Jogos" icon={faPuzzlePiece}></Card>
-        <Card name="Expansões" icon={faDiceD20}></Card>
+        <Card name="Expansões" icon={faDice}></Card>
         <Card name="Acessorios" icon={faHatWizard}></Card>
       </Row>
     </Container>
