@@ -125,11 +125,30 @@ export default class Cart extends Component {
                       <label>3 produtos</label>
                     </Grid>
                     <Grid cols="6 6 6 6">
-                      <label>R$50,00</label>
+                      <label>R$280,00</label>
+                    </Grid>
+                  </Row>
+                  <Row>
+                    <Grid cols="6 6 6 6">
+                      <label>Frete</label>
+                    </Grid>
+                    <Grid cols="6 6 6 6">
+                      <label>R$32,00</label>
+                    </Grid>
+                  </Row>
+                  <div className="dropdown-divider"></div>
+                  <Row>
+                    <Grid cols="6 6 6 6">
+                      <label>Total</label>
+                    </Grid>
+                    <Grid cols="6 6 6 6">
+                      <label>R$312,00</label>
                     </Grid>
                   </Row>
                 </div>
-                <div className="card-body"></div>
+                <div className="card-body">
+                    <Button variant="outline-success">Finalizar compra</Button>
+                </div>
               </div>
             </Grid>
           </Row>
