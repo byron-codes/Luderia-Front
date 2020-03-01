@@ -32,23 +32,28 @@ export default class Login extends Component {
                   <Row className="mt-2">
                     <Input cols="12 12 12 12" placeholder="email"></Input>
                   </Row>
-                  <Row className="">
+                  <Row>
                     <Input cols="12 12 12 12" placeholder="nickname"></Input>
                   </Row>
-                  <Row className="">
+                  <Row>
                     <Input cols="12 12 12 12" placeholder="CPF"></Input>
                   </Row>
-                  <Row className="">
-                    <Input cols="12 12 12 12" placeholder="senha"></Input>
-                  </Row>
-                  <Row className="">
+                  <Row>
                     <Input
+                      type="password"
+                      cols="12 12 12 12"
+                      placeholder="senha"
+                    ></Input>
+                  </Row>
+                  <Row>
+                    <Input
+                      type="password"
                       cols="12 12 12 12"
                       placeholder="confirmar senha"
                     ></Input>
                   </Row>
 
-                  <Row className="">
+                  <Row>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-start">
                       <Button variant="outline-warning">cancelar</Button>
                     </Grid>

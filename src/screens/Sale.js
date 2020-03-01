@@ -11,7 +11,7 @@ export default class Cart extends Component {
     return (
       <React.Fragment>
         <NavBar></NavBar>
-        <Container class="mt-100">
+        <Container class="mt-100 mb-60">
           <Row>
             <Grid cols="9 9 9 9">
               <Card>
@@ -178,6 +178,9 @@ export default class Cart extends Component {
                     aclass="blue-box"
                     href="/cart/address"
                   ></SmallBox>
+                </div>
+                <div style={{backgroundColor:"red", minHeight:"50px"}}>
+
                 </div>
                 <div className="card-footer">
                   <Button variant="outline-success">Finalizar compra</Button>
