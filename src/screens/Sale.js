@@ -4,7 +4,7 @@ import Footer from "../components/Footer/Footer";
 import Container from "../components/Layout/Container";
 import { Row, Button, Card } from "react-bootstrap";
 import Grid from "../components/Layout/Grid";
-import SmallBox from '../components/Box/SmallBox'
+import SmallBox from "../components/Box/SmallBox";
 
 export default class Cart extends Component {
   render() {
@@ -14,10 +14,13 @@ export default class Cart extends Component {
         <Container class="mt-100">
           <Row>
             <Grid cols="9 9 9 9">
-              <Card>
-                <div className="row mt-3 mb-3">
-                  <Grid cols="7 7 7 7">
-                    <div style={{ marginLeft: "50px" }} className="d-flex">
+              <Row>
+                <Grid cols="4 4 4 4">
+                  <Card>
+                    <div
+                      className="mt-3 mb-3 d-flex"
+                      style={{ marginLeft: "20px" }}
+                    >
                       <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
                         <img
                           src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
@@ -29,33 +32,14 @@ export default class Cart extends Component {
                         <p className="font-weight-bold">R$700,00</p>
                       </div>
                     </div>
-                  </Grid>
-                  <Grid cols="5 5 5 5">
-                    <div className="form-group">
-                      <label>Quantidade</label>
-                      <Row>
-                        <Grid cols="3 3 3 3">
-                          <input
-                            className="form-control"
-                            placeholder="10"
-                            type="number"
-                            defaultValue="1"
-                          ></input>
-                        </Grid>
-                        <Grid cols="3 3 3 3">
-                          <Button type="button" variant="outline-danger">
-                            <i class="fas fa-trash-alt"></i>
-                          </Button>
-                        </Grid>
-                      </Row>
-                    </div>
-                  </Grid>
-                </div>
-              </Card>
-              <Card>
-                <div className="row mt-3 mb-3">
-                  <Grid cols="7 7 7 7">
-                    <div style={{ marginLeft: "50px" }} className="d-flex">
+                  </Card>
+                </Grid>
+                <Grid cols="4 4 4 4">
+                  <Card>
+                    <div
+                      className="mt-3 mb-3 d-flex"
+                      style={{ marginLeft: "20px" }}
+                    >
                       <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
                         <img
                           src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
@@ -67,33 +51,14 @@ export default class Cart extends Component {
                         <p className="font-weight-bold">R$700,00</p>
                       </div>
                     </div>
-                  </Grid>
-                  <Grid cols="5 5 5 5">
-                    <div className="form-group">
-                      <label>Quantidade</label>
-                      <Row>
-                        <Grid cols="3 3 3 3">
-                          <input
-                            className="form-control"
-                            placeholder="10"
-                            type="number"
-                            defaultValue="1"
-                          ></input>
-                        </Grid>
-                        <Grid cols="3 3 3 3">
-                          <Button type="button" variant="outline-danger">
-                            <i class="fas fa-trash-alt"></i>
-                          </Button>
-                        </Grid>
-                      </Row>
-                    </div>
-                  </Grid>
-                </div>
-              </Card>
-              <Card>
-                <div className="row mt-3 mb-3">
-                  <Grid cols="7 7 7 7">
-                    <div style={{ marginLeft: "50px" }} className="d-flex">
+                  </Card>
+                </Grid>
+                <Grid cols="4 4 4 4">
+                  <Card>
+                    <div
+                      className="mt-3 mb-3 d-flex"
+                      style={{ marginLeft: "20px" }}
+                    >
                       <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
                         <img
                           src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
@@ -105,29 +70,9 @@ export default class Cart extends Component {
                         <p className="font-weight-bold">R$700,00</p>
                       </div>
                     </div>
-                  </Grid>
-                  <Grid cols="5 5 5 5">
-                    <div className="form-group">
-                      <label>Quantidade</label>
-                      <Row>
-                        <Grid cols="3 3 3 3">
-                          <input
-                            className="form-control"
-                            placeholder="10"
-                            type="number"
-                            defaultValue="1"
-                          ></input>
-                        </Grid>
-                        <Grid cols="3 3 3 3">
-                          <Button type="button" variant="outline-danger">
-                            <i class="fas fa-trash-alt"></i>
-                          </Button>
-                        </Grid>
-                      </Row>
-                    </div>
-                  </Grid>
-                </div>
-              </Card>
+                  </Card>
+                </Grid>
+              </Row>
             </Grid>
             <Grid cols="3 3 3 3">
               <div className="card">
@@ -165,22 +110,23 @@ export default class Cart extends Component {
                     text="Maria das marias"
                     icon="far fa-credit-card marsala-icon"
                     nohref
-                    color="m-0"
+                    color="m-0 card-sale"
                     aclass="marsala-box"
                     href="/cart/card"
                   ></SmallBox>
+                  <div className="dropdown-divider"></div>
                   <SmallBox
                     title="Rua XXXXX, 22"
                     text="Vila Maria"
                     icon="fas fa-map-marker-alt blue-icon"
                     nohref
-                    color="m-0"
+                    color="m-0 card-sale"
                     aclass="blue-box"
                     href="/cart/address"
                   ></SmallBox>
                 </div>
                 <div className="card-footer">
-                  <Button variant="outline-success">Finalizar compra</Button>
+                  <Button variant="outline-warning">Solicitar troca</Button>
                 </div>
               </div>
             </Grid>

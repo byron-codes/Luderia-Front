@@ -24,7 +24,7 @@ export default class Itens extends Component {
     rows: [
       <tr className="table-light mouse-click">
         <td scope="row" className="font-weight-bold">
-          VO11
+          #147
         </td>
         <td>3 Itens</td>
         <td>R$ 300,00</td>
@@ -33,7 +33,7 @@ export default class Itens extends Component {
       </tr>,
       <tr className="table-light mouse-click">
         <td scope="row" className="font-weight-bold">
-          VO13
+          #456
         </td>
         <td>3 Itens</td>
         <td>R$ 300,00</td>
@@ -42,7 +42,7 @@ export default class Itens extends Component {
       </tr>,
       <tr className="table-light mouse-click">
         <td scope="row" className="font-weight-bold">
-          VO18
+          #245
         </td>
         <td>3 Itens</td>
         <td>R$ 300,00</td>
@@ -51,12 +51,30 @@ export default class Itens extends Component {
       </tr>,
       <tr className="table-light mouse-click">
         <td scope="row" className="font-weight-bold">
-          VO16
+          <a href="/sale" className="link-table">
+            #241
+          </a>
         </td>
-        <td>3 Itens</td>
-        <td>R$ 300,00</td>
-        <td>20/12/19</td>
-        <td className="text-success">finalizado</td>
+        <td>
+          <a href="/sale" className="link-table">
+            3 Itens
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table">
+            R$ 300,00
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table">
+            20/12/19
+          </a>
+        </td>
+        <td className="text-success">
+          <a href="/sale" className="link-table">
+            finalizado
+          </a>
+        </td>
       </tr>
     ]
   };

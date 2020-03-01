@@ -28,20 +28,20 @@
   background-color: #420000 !important;
 }
 
-.bg-marsala{
+.bg-marsala {
   background-color: #420000 !important;
   color: azure !important;
 }
 
-.text-marsala{
+.text-marsala {
   color: #420000;
 }
 
-.mouse-click{
+.mouse-click {
   cursor: pointer;
 }
 
-td:hover{
+td:hover {
   background-color: rgb(201, 201, 201) !important;
 }
 
@@ -54,11 +54,23 @@ td:hover{
   color: #420000 !important;
 }
 
-.blue-box{
+.blue-box {
   background: #0777ad !important;
   color: white !important;
 }
 
 .blue-icon {
   color: #0777ad !important;
+}
+
+.card-sale {
+  height: 100px !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 0 !important;
+}
+
+.link-table {
+  width: 100%;
+  display: block;
+  color: black;
 }

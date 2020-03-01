@@ -40,7 +40,7 @@ export default props => (
           <i className="fas fa-shopping-cart" style={{ fontSize: "24px" }}></i>
           <span
             className="badge badge-info navbar-badge"
-            style={{ right: "-10px", top: "0px" }}
+            style={{ top: "0px" }}
           >
             3
           </span>
