@@ -7,7 +7,7 @@
   width: 300px !important;
 }
 
-.mt-100{
+.mt-100 {
   margin-top: 100px !important;
 }
 
@@ -19,4 +19,27 @@
 .button-more {
   font-size: 20px !important;
   padding-top: 0px !important;
+}
+
+.footer-paint {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #420000 !important;
+}
+
+.bg-marsala{
+  background-color: #420000;
+}
+
+.text-marsala{
+  color: #420000;
+}
+
+.mouse-click{
+  cursor: pointer;
+}
+
+td:hover{
+  background-color: rgb(201, 201, 201) !important;
 }

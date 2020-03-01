@@ -13,6 +13,8 @@ import Item from "./screens/Item";
 import Cart from "./screens/Cart";
 import Buy from "./screens/Buy";
 import Login from "./screens/Login";
+import SalesClient from "./screens/SalesClient";
+
 
 
 export default props => (
@@ -25,6 +27,7 @@ export default props => (
       <Route path="/cart/buy" component={Buy} exact></Route>
       <Route path="/admin" component={Admin} exact></Route>
       <Route path="/login" component={Login} exact></Route>
+      <Route path="/sales" component={SalesClient} exact></Route>
       <Redirect from="*" to="/"></Redirect>
     </Switch>
   </Router>
