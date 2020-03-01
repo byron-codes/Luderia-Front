@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Table from "../components/Table/Table";
+import Header from "../components/NavBar/NavBarAdmin";
+import Sidebar from "../components/SideBar/SideBar";
+import Footer from "../components/Footer/FooterAdmin";
 
 export default class CouponList extends Component {
   state = { rows: "" };
@@ -19,28 +22,16 @@ export default class CouponList extends Component {
 
   render() {
     return (
-      <Table head={['id']} rows={this.state.rows}></Table>
-      // <table id="example1" className="table table-bordered table-striped">
-      //   <thead>
-      //     <tr>
-      //       <th>Rendering engine</th>
-      //       <th>Browser</th>
-      //       <th>Platform(s)</th>
-      //       <th>Engine version</th>
-      //       <th>CSS grade</th>
-      //     </tr>
-      //   </thead>
-      //   <tbody>{this.state.rows.length > 0 ? this.state.rows : null}</tbody>
-      //   <tfoot>
-      //     <tr>
-      //       <th>Rendering engine</th>
-      //       <th>Browser</th>
-      //       <th>Platform(s)</th>
-      //       <th>Engine version</th>
-      //       <th>CSS grade</th>
-      //     </tr>
-      //   </tfoot>
-      // </table>
+      <div className="wrapper">
+        <Header></Header>
+        <Sidebar></Sidebar>
+        <div className="content-wrapper">
+          <div className="m-3">
+            <Table head={['id']} rows={this.state.rows}></Table>
+          </div>
+        </div>
+        <Footer></Footer>
+      </div>
     );
   }
 }

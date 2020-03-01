@@ -7,7 +7,6 @@ import Sidebar from "./components/SideBar/SideBar";
 import Footer from "./components/Footer/FooterAdmin";
 import LineChart from "./components/Chart/LineChart";
 import Cupon from "./screens/Cupon";
-// import Messages from './components/Message/Message'
 import Routes from "./adminRoutes";
 
 export default props => (
@@ -20,6 +19,5 @@ export default props => (
       </div>
     </div>
     <Footer></Footer>
-    {/* <Messages></Messages> */}
   </div>
 );

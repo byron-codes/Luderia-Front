@@ -29,12 +29,12 @@ export default props => (
     </MenuTree>
     <MenuTree icon="fas fa-circle" text="Acessórios">
       <MenuItem
-        href="/accessories"
+        href="/admin/accessories"
         icon="far fa-dot-circle"
         text="Cadastrar"
       ></MenuItem>
       <MenuItem
-        href="/accessories/list"
+        href="/admin/accessories/list"
         icon="far fa-dot-circle"
         text="Pesquisar"
       ></MenuItem>
@@ -43,12 +43,12 @@ export default props => (
     <MenuTag text="Outros"></MenuTag>
     <MenuTree icon="fas fa-circle" text="Cupons">
     <MenuItem
-      href="/coupon"
+      href="/admin/coupon"
       icon="far fa-dot-circle"
       text="Cadastrar"
     ></MenuItem>
     <MenuItem
-      href="/coupon/list"
+      href="/admin/coupon/list"
       icon="far fa-dot-circle"
       text="Pesquisar"
     ></MenuItem>

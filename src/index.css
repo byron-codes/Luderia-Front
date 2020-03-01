@@ -20,3 +20,21 @@
   font-size: 20px !important;
   padding-top: 0px !important;
 }
+
+.marsala-box {
+  background: #420000 !important;
+  color: white !important;
+}
+
+.marsala-icon {
+  color: #420000 !important;
+}
+
+.blue-box{
+  background: #0777ad !important;
+  color: white !important;
+}
+
+.blue-icon {
+  color: #0777ad !important;
+}
