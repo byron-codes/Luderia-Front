@@ -1,9 +1,22 @@
-/* .carousel-image {
-  width: 100%;
-  object-fit: cover;
-  height: 450px;
-} */
+.carousel-image {
+  height: 100vh;
+  width: 100vw;
+}
 
-.carousel-size {
-  max-height: 450px;
+.w-300 {
+  width: 300px !important;
+}
+
+.mt-100{
+  margin-top: 100px !important;
+}
+
+.forgot-password {
+  padding-left: 15px !important;
+  font-size: 14px;
+}
+
+.button-more {
+  font-size: 20px !important;
+  padding-top: 0px !important;
 }
