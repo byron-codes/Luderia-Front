@@ -19,6 +19,8 @@ import AccessoriesList from "./screens/AccessoriesList";
 import Dashboard from "./screens/Dashboard";
 import Login from "./screens/Login";
 import SalesClient from "./screens/SalesClient";
+import Sale from "./screens/Sale";
+
 
 export default props => (
   <Router>
@@ -36,6 +38,7 @@ export default props => (
       <Route path="/admin/coupon/list" component={CouponList} exact></Route>
       <Route path="/admin/accessories" component={Accessories} exact></Route>
       <Route path="/admin/accessories/list" component={AccessoriesList} exact></Route>
+      <Route path="/sale" component={Sale} exact></Route>
       <Redirect from="*" to="/404"></Redirect>
     </Switch>
   </Router>

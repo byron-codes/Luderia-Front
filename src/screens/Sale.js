@@ -164,7 +164,7 @@ export default class Cart extends Component {
                     title="XXXX XXXX XXXX 1234"
                     text="Maria das marias"
                     icon="far fa-credit-card marsala-icon"
-                    actionText="Trocar cartão"
+                    nohref
                     color="m-0"
                     aclass="marsala-box"
                     href="/cart/card"
@@ -173,7 +173,7 @@ export default class Cart extends Component {
                     title="Rua XXXXX, 22"
                     text="Vila Maria"
                     icon="fas fa-map-marker-alt blue-icon"
-                    actionText="Trocar endereço"
+                    nohref
                     color="m-0"
                     aclass="blue-box"
                     href="/cart/address"
