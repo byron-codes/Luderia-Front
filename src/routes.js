@@ -20,7 +20,7 @@ export default props => (
       <Route path="/itens" component={ItensList} exact></Route>
       <Route path="/itens/*" component={Item} exact></Route>
       <Route path="/cart" component={Cart} exact></Route>
-      <Route path="/cart/buy" component={Cart} exact></Route>
+      <Route path="/cart/buy" component={Buy} exact></Route>
       <Route path="/admin" component={Admin} exact></Route>
       <Redirect from="*" to="/"></Redirect>
     </Switch>
