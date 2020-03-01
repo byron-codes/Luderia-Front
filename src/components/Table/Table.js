@@ -6,17 +6,18 @@ export default props => {
     return (
       <tr>
         {itens.map(value => (
-          <th key={value}>{value}</th>
+          <th key={value} scope="col" className="text-white">
+            {value}
+          </th>
         ))}
       </tr>
     );
   }
 
   return (
-    <table id="example1" className="table table-bordered table-striped">
-      <thead>{renderHead()}</thead>
+    <table className="table table-bordered">
+      <thead className="bg-marsala">{renderHead()}</thead>
       <tbody>{props.rows.length > 0 ? props.rows : null}</tbody>
-      <tfoot>{renderHead()}</tfoot>
     </table>
   );
 };

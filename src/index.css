@@ -29,7 +29,8 @@
 }
 
 .bg-marsala{
-  background-color: #420000;
+  background-color: #420000 !important;
+  color: azure !important;
 }
 
 .text-marsala{

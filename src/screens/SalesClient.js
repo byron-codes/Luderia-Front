@@ -4,6 +4,7 @@ import Container from "../components/Layout/Container";
 import Grid from "../components/Layout/Grid";
 import { Row, Pagination, Card } from "react-bootstrap";
 import Footer from "../components/Footer/Footer";
+import Table from "../components/Table/Table";
 
 const options = [
   { value: "chocolate", label: "Galápagos" },
@@ -19,6 +20,46 @@ const options2 = [
 ];
 
 export default class Itens extends Component {
+  state = {
+    rows: [
+      <tr className="table-light mouse-click">
+        <td scope="row" className="font-weight-bold">
+          VO11
+        </td>
+        <td>3 Itens</td>
+        <td>R$ 300,00</td>
+        <td>01/03/20</td>
+        <td className="text-success">finalizado</td>
+      </tr>,
+      <tr className="table-light mouse-click">
+        <td scope="row" className="font-weight-bold">
+          VO13
+        </td>
+        <td>3 Itens</td>
+        <td>R$ 300,00</td>
+        <td>06/01/20</td>
+        <td className="text-info">em andamento</td>
+      </tr>,
+      <tr className="table-light mouse-click">
+        <td scope="row" className="font-weight-bold">
+          VO18
+        </td>
+        <td>3 Itens</td>
+        <td>R$ 300,00</td>
+        <td>08/12/19</td>
+        <td className="text-warning">processo de troca</td>
+      </tr>,
+      <tr className="table-light mouse-click">
+        <td scope="row" className="font-weight-bold">
+          VO16
+        </td>
+        <td>3 Itens</td>
+        <td>R$ 300,00</td>
+        <td>20/12/19</td>
+        <td className="text-success">finalizado</td>
+      </tr>
+    ]
+  };
   render() {
     return (
       <React.Fragment>
@@ -30,7 +71,7 @@ export default class Itens extends Component {
                 <Row>
                   <Grid cols="4 4 4 4" class="d-flex">
                     <label className="mb-0 d-flex align-items-center">
-                      125 itens
+                      4 itens
                     </label>
                   </Grid>
                   <Grid cols="8 8 8 8">
@@ -40,7 +81,7 @@ export default class Itens extends Component {
                         class="d-flex p-0 justify-content-end mr-3"
                       >
                         <label className="mr-2 mb-0 d-flex align-items-center">
-                          Produtos por página
+                          itens por página
                         </label>
                         <select
                           className="custom-select"
@@ -71,50 +112,10 @@ export default class Itens extends Component {
                   </Grid>
                 </Row>
               </div>
-
-              <table className="table">
-                <thead class="thead-dark">
-                  <tr>
-                    <th scope="col">código</th>
-                    <th scope="col">quantidade</th>
-                    <th scope="col">valor</th>
-                    <th scope="col">data</th>
-                    <th scope="col">status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="table-light mouse-click">
-                    <td scope="row" className="font-weight-bold">VO11</td>
-                    <td>3 Itens</td>
-                    <td>R$ 300,00</td>
-                    <td>01/03/20</td>
-                    <td className="text-success">finalizado</td>
-                  </tr>
-                  <tr className="table-light mouse-click">
-                    <td scope="row" className="font-weight-bold">VO13</td>
-                    <td>3 Itens</td>
-                    <td>R$ 300,00</td>
-                    <td>06/01/20</td>
-                    <td className="text-info">em andamento</td>
-                  </tr>
-                  <tr className="table-light mouse-click">
-                    <td scope="row" className="font-weight-bold">VO18</td>
-                    <td>3 Itens</td>
-                    <td>R$ 300,00</td>
-                    <td>08/12/19</td>
-                    <td className="text-warning">processo de troca</td>
-                  </tr>
-                  <tr className="table-light mouse-click">
-                    <td scope="row" className="font-weight-bold">VO16</td>
-                    <td>3 Itens</td>
-                    <td>R$ 300,00</td>
-                    <td>20/12/19</td>
-                    <td className="text-success">finalizado</td>
-                  </tr>
-                </tbody>
-              </table>
-              <Row></Row>
-              <Row></Row>
+              <Table
+                head={["Código", "Quantidade", "Valor", "Data", "Status"]}
+                rows={this.state.rows}
+              ></Table>
               <div className="mt-3 mb-5">
                 <Row>
                   <Grid

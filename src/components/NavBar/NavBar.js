@@ -1,18 +1,11 @@
 import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-
 import "../../imports";
 import Container from "../Layout/Container";
-import { Row } from "react-bootstrap";
-import Grid from "../Layout/Grid";
 
 export default props => (
-  <Navbar bg="dark" variant="dark" fixed="top">
+  <Navbar className="bg-marsala" variant="dark" fixed="top">
     <Navbar.Brand href="#home">
       <i className="fas fa-dice-d20"></i>
     </Navbar.Brand>
