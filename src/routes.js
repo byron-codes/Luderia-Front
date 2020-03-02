@@ -22,7 +22,11 @@ import SalesClient from "./screens/SalesClient";
 import Sale from "./screens/Sale";
 import Profile from "./screens/Profile";
 import SaleChange from "./screens/SaleChange";
-
+import AdminSales from "./screens/AdminSales";
+import Devolutions from "./screens/Devolutions";
+import DevolutionsActions from "./screens/DevolutionsAction";
+import Shipping from "./screens/Shipping";
+import Reports from "./screens/Reports";
 
 export default props => (
   <Router>
@@ -36,13 +40,26 @@ export default props => (
       <Route path="/login" component={Login} exact></Route>
       <Route path="/sales" component={SalesClient} exact></Route>
       <Route path="/sale/change" component={SaleChange} exact></Route>
+      <Route path="/sale" component={Sale} exact></Route>
+      <Route path="/profile" component={Profile} exact></Route>
       <Route path="/admin" component={Dashboard} exact></Route>
       <Route path="/admin/coupon" component={Coupon} exact></Route>
       <Route path="/admin/coupon/list" component={CouponList} exact></Route>
       <Route path="/admin/accessories" component={Accessories} exact></Route>
-      <Route path="/admin/accessories/list" component={AccessoriesList} exact></Route>
-      <Route path="/sale" component={Sale} exact></Route>
-      <Route path="/profile" component={Profile} exact></Route>
+      <Route
+        path="/admin/accessories/list"
+        component={AccessoriesList}
+        exact
+      ></Route>
+      <Route path="/admin/sales" component={AdminSales} exact></Route>
+      <Route path="/admin/reports" component={Reports} exact></Route>
+      <Route path="/admin/shipping" component={Shipping} exact></Route>
+      <Route path="/admin/devolutions" component={Devolutions} exact></Route>
+      <Route
+        path="/admin/devolutions/actions"
+        component={DevolutionsActions}
+        exact
+      ></Route>
       <Redirect from="*" to="/404"></Redirect>
     </Switch>
   </Router>

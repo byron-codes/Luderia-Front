@@ -15,7 +15,7 @@ export default props => {
   }
 
   return (
-    <table className="table table-bordered">
+    <table className="table table-bordered table-striped">
       <thead className="bg-marsala">{renderHead()}</thead>
       <tbody>{props.rows.length > 0 ? props.rows : null}</tbody>
     </table>

@@ -5,9 +5,12 @@ import Container from "../components/Layout/Container";
 import { Row, Button, Card } from "react-bootstrap";
 import Grid from "../components/Layout/Grid";
 import SmallBox from "../components/Box/SmallBox";
-import swal from 'sweetalert'
+import swal from "sweetalert";
+import Input from "../components/Field/Input";
+import LabelAndInput from "../components/Field/LabelAndInput";
 
 export default class Cart extends Component {
+  state = { coupon: false };
   render() {
     return (
       <React.Fragment>
@@ -150,13 +153,42 @@ export default class Cart extends Component {
                       <label>R$32,00</label>
                     </Grid>
                   </Row>
+                  {this.state.coupon ? (
+                    <Row>
+                      <Grid cols="6 6 6 6">
+                        <label>Cupom</label>
+                      </Grid>
+                      <Grid cols="6 6 6 6" class="d-flex justify-content-end">
+                        <label>R$150,00</label>
+                      </Grid>
+                    </Row>
+                  ) : (
+                    <div></div>
+                  )}
                   <div className="dropdown-divider"></div>
                   <Row>
                     <Grid cols="6 6 6 6">
                       <label>Total</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>R$312,00</label>
+                      <label>
+                        {!this.state.coupon ? "R$312,00" : "R$162,00"}
+                      </label>
+                    </Grid>
+                  </Row>
+                  <div className="dropdown-divider"></div>
+                  <Row>
+                    <Grid cols="6 6 6 6">
+                      <LabelAndInput label="Cupom"></LabelAndInput>
+                    </Grid>
+                    <Grid cols="6 6 6 6" class="d-flex justify-content-end">
+                      <Button
+                        variant="outline-success"
+                        style={{ height: "40px", width: "80px", marginTop: "30px" }}
+                        onClick={e => this.setState({ coupon: true })}
+                      >
+                        Aplicar
+                      </Button>
                     </Grid>
                   </Row>
                 </div>
