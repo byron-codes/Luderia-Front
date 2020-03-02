@@ -31,7 +31,7 @@ export default class Cart extends Component {
                     cols="12 12 12 12"
                     class="d-flex justify-content-center "
                   >
-                    <h2 className="mt-3">YunikonShine</h2>
+                    <h2 className="mt-3">Wagner006</h2>
                   </Grid>
                 </Card.Header>
                 <Card.Body>
@@ -39,13 +39,13 @@ export default class Cart extends Component {
                     <Grid cols="4 4 4 4">
                       <LabelAndInput
                         label="Nome"
-                        value="Maria de Souza"
+                        value="Wagner de Souza"
                       ></LabelAndInput>
                     </Grid>
                     <Grid cols="4 4 4 4">
                       <LabelAndInput
                         label="email"
-                        value="maria.souza@gmail.com"
+                        value="wagner006@gmail.com"
                       ></LabelAndInput>
                     </Grid>
                     <Grid cols="4 4 4 4">

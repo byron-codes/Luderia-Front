@@ -12,13 +12,13 @@ export default class NavBar extends Component {
   render() {
     return (
       <Navbar className="bg-marsala" variant="dark" fixed="top">
-        <Navbar.Brand href="#home">
+        <Navbar.Brand href="/">
           <i className="fas fa-dice-d20"></i>
         </Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link href="#home">Jogos</Nav.Link>
-          <Nav.Link href="#features">Expansões</Nav.Link>
-          <Nav.Link href="#pricing">Acessórios</Nav.Link>
+          <Nav.Link href="/itens">Jogos</Nav.Link>
+          <Nav.Link href="/itens">Expansões</Nav.Link>
+          <Nav.Link href="/itens">Acessórios</Nav.Link>
           <form className="form-inline ml-3">
             <div className="input-group input-group-sm">
               <input
@@ -71,7 +71,7 @@ export default class NavBar extends Component {
                   style={{ margin: "0px", marginLeft: "10px" }}
                   className="mouse-click"
                 >
-                  Maria das Marias
+                  wagner006
                 </label>
               ) : (
                 <div></div>
