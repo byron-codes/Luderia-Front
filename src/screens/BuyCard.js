@@ -27,7 +27,7 @@ export default class BuyCard extends Component {
                         icon="far fa-credit-card marsala-icon"
                         actionText="Selecionar cartão"
                         color="m-0"
-                        aclass="marsala-box"
+                        // aclass="marsala-box"
                       ></SmallBox>
                     </Grid>
                     <Grid cols="3 3 3 3">
@@ -37,7 +37,7 @@ export default class BuyCard extends Component {
                         icon="far fa-credit-card marsala-icon"
                         actionText="Selecionar cartão"
                         color="m-0"
-                        aclass="marsala-box"
+                        // aclass="marsala-box"
                       ></SmallBox>
                     </Grid>
                     <Grid cols="3 3 3 3">
@@ -47,7 +47,7 @@ export default class BuyCard extends Component {
                         icon="far fa-credit-card marsala-icon"
                         actionText="Selecionar cartão"
                         color="m-0"
-                        aclass="marsala-box"
+                        // aclass="marsala-box"
                       ></SmallBox>
                     </Grid>
                     <Grid cols="3 3 3 3">
@@ -57,7 +57,7 @@ export default class BuyCard extends Component {
                         icon="far fa-credit-card marsala-icon"
                         actionText="Selecionar cartão"
                         color="m-0"
-                        aclass="marsala-box"
+                        // aclass="marsala-box"
                       ></SmallBox>
                     </Grid>
                   </div>

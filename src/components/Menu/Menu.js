@@ -10,24 +10,22 @@ export default props => (
     role="menu"
     data-accordion="false"
   >
-    <MenuTag text="Dashboard"></MenuTag>
-    <MenuItem icon="far fa-dot-circle" text="Dashboard"></MenuItem>
     <MenuTag text="Vendas"></MenuTag>
     <MenuItem icon="far fa-dot-circle" text="Pesquisar" href="/admin/sales"></MenuItem>
     <MenuItem icon="far fa-dot-circle" text="Devoluções" href="/admin/devolutions"></MenuItem>
     <MenuItem icon="far fa-dot-circle" text="Entregas" href="/admin/shipping"></MenuItem>
     <MenuTag text="Produtos"></MenuTag>
-    <MenuTree icon="fas fa-circle" text="Jogos">
+    <MenuTree icon="fas fa-dice" text="Jogos">
       <MenuItem icon="far fa-dot-circle" text="Cadastrar"></MenuItem>
       <MenuItem icon="far fa-dot-circle" text="Pesquisar"></MenuItem>
       <MenuItem icon="far fa-dot-circle" text="Estoque"></MenuItem>
     </MenuTree>
-    <MenuTree icon="fas fa-circle" text="Espansões">
+    <MenuTree icon="fas fa-plus-circle" text="Espansões">
       <MenuItem icon="far fa-dot-circle" text="Cadastrar"></MenuItem>
       <MenuItem icon="far fa-dot-circle" text="Pesquisar"></MenuItem>
       <MenuItem icon="far fa-dot-circle" text="Estoque"></MenuItem>
     </MenuTree>
-    <MenuTree icon="fas fa-circle" text="Acessórios">
+    <MenuTree icon="fas fa-shopping-bag" text="Acessórios">
       <MenuItem
         href="/admin/accessories"
         icon="far fa-dot-circle"
@@ -41,7 +39,7 @@ export default props => (
       <MenuItem icon="far fa-dot-circle" text="Estoque"></MenuItem>
     </MenuTree>
     <MenuTag text="Outros"></MenuTag>
-    <MenuTree icon="fas fa-circle" text="Cupons">
+    <MenuTree icon="fas fa-ticket-alt" text="Cupons">
     <MenuItem
       href="/admin/coupon"
       icon="far fa-dot-circle"
@@ -53,14 +51,14 @@ export default props => (
       text="Pesquisar"
     ></MenuItem>
     </MenuTree>
-    <MenuTree icon="fas fa-circle" text="Usuário">
+    <MenuTree icon="fas fa-users" text="Usuário">
     <MenuItem
       href="/coupon/list"
       icon="far fa-dot-circle"
       text="Pesquisar"
     ></MenuItem>
     </MenuTree>
-    <MenuTree icon="fas fa-circle" text="Relatórios">
+    <MenuTree icon="fas fa-chart-pie" text="Relatórios">
     <MenuItem
       href="/admin/reports"
       icon="far fa-dot-circle"
