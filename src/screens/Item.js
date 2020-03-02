@@ -76,7 +76,7 @@ export default class Item extends Component {
                       cols="12 12 12 12"
                       class="d-flex justify-content-center"
                     >
-                      <Button type="button" variant="outline-primary">
+                      <Button type="button" variant="outline-primary" onClick={e => (window.location = "/cart")}>
                         Adicionar ao carrinho
                       </Button>
                     </Grid>

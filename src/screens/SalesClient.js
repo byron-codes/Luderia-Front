@@ -24,54 +24,108 @@ export default class Itens extends Component {
     rows: [
       <tr className="table-light mouse-click">
         <td scope="row" className="font-weight-bold">
-          #147
-        </td>
-        <td>3 Itens</td>
-        <td>R$ 300,00</td>
-        <td>01/03/20</td>
-        <td className="text-success">finalizado</td>
-      </tr>,
-      <tr className="table-light mouse-click">
-        <td scope="row" className="font-weight-bold">
-          #456
-        </td>
-        <td>3 Itens</td>
-        <td>R$ 300,00</td>
-        <td>06/01/20</td>
-        <td className="text-info">em andamento</td>
-      </tr>,
-      <tr className="table-light mouse-click">
-        <td scope="row" className="font-weight-bold">
-          #245
-        </td>
-        <td>3 Itens</td>
-        <td>R$ 300,00</td>
-        <td>08/12/19</td>
-        <td className="text-warning">processo de troca</td>
-      </tr>,
-      <tr className="table-light mouse-click">
-        <td scope="row" className="font-weight-bold">
-          <a href="/sale" className="link-table">
+          <a href="/sale" className="link-table color-black">
             #241
           </a>
         </td>
         <td>
-          <a href="/sale" className="link-table">
+          <a href="/sale" className="link-table color-black">
             3 Itens
           </a>
         </td>
         <td>
-          <a href="/sale" className="link-table">
+          <a href="/sale" className="link-table color-black">
             R$ 300,00
           </a>
         </td>
         <td>
-          <a href="/sale" className="link-table">
-            20/12/19
+          <a href="/sale" className="link-table color-black">
+            01/12/19
           </a>
         </td>
-        <td className="text-success">
-          <a href="/sale" className="link-table">
+        <td>
+          <a href="/sale" className="link-table text-success">
+            finalizado
+          </a>
+        </td>
+      </tr>,
+      <tr className="table-light mouse-click">
+        <td scope="row" className="font-weight-bold">
+          <a href="/sale" className="link-table color-black">
+            #241
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            3 Itens
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            R$ 300,00
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            13/01/20
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table text-info">
+            em andamento
+          </a>
+        </td>
+      </tr>,
+      <tr className="table-light mouse-click">
+        <td scope="row" className="font-weight-bold">
+          <a href="/sale" className="link-table color-black">
+            #241
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            3 Itens
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            R$ 300,00
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            20/02/20
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table text-warning">
+            processo de troca
+          </a>
+        </td>
+      </tr>,
+      <tr className="table-light mouse-click">
+        <td scope="row" className="font-weight-bold">
+          <a href="/sale" className="link-table color-black">
+            #241
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            3 Itens
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            R$ 300,00
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table color-black">
+            20/05/19
+          </a>
+        </td>
+        <td>
+          <a href="/sale" className="link-table text-success">
             finalizado
           </a>
         </td>

@@ -125,11 +125,8 @@ export default class Cart extends Component {
                     href="/cart/address"
                   ></SmallBox>
                 </div>
-                <div style={{backgroundColor:"red", minHeight:"50px"}}>
-
-                </div>
                 <div className="card-footer">
-                  <Button variant="outline-warning">Solicitar troca</Button>
+                  <Button variant="outline-warning" href="/sale/change">Solicitar troca</Button>
                 </div>
               </div>
             </Grid>

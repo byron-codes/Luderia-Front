@@ -4,7 +4,8 @@ import Footer from "../components/Footer/Footer";
 import Container from "../components/Layout/Container";
 import { Row, Button, Card } from "react-bootstrap";
 import Grid from "../components/Layout/Grid";
-import SmallBox from '../components/Box/SmallBox'
+import SmallBox from "../components/Box/SmallBox";
+import swal from 'sweetalert'
 
 export default class Cart extends Component {
   render() {
@@ -180,7 +181,20 @@ export default class Cart extends Component {
                   ></SmallBox>
                 </div>
                 <div className="card-footer">
-                  <Button variant="outline-success">Finalizar compra</Button>
+                  <Button
+                    variant="outline-success"
+                    onClick={e =>
+                      swal(
+                        "Muito obrigado",
+                        "Sua compra foi efetuada com succeso",
+                        "success"
+                      ).then(value => {
+                        window.location = "/";
+                      })
+                    }
+                  >
+                    Finalizar compra
+                  </Button>
                 </div>
               </div>
             </Grid>

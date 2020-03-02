@@ -63,7 +63,7 @@ export default props => (
         <CardImage></CardImage>
       </Row>
       <Row className="mr-5 ml-5">
-        <button className="btn btn-link button-more" type="button">
+        <button className="btn btn-link button-more" type="button" onClick={e => (window.location = "/itens")}>
           Ver mais jogos
         </button>
       </Row>
@@ -82,7 +82,7 @@ export default props => (
         <CardImage></CardImage>
       </Row>
       <Row className="mr-5 ml-5">
-        <button className="btn btn-link button-more" type="button">
+        <button className="btn btn-link button-more" type="button" onClick={e => (window.location = "/itens")}>
           Ver mais expansões
         </button>
       </Row>
@@ -101,7 +101,7 @@ export default props => (
         <CardImage></CardImage>
       </Row>
       <Row className="mr-5 ml-5 mb-5">
-        <button className="btn btn-link button-more" type="button">
+        <button className="btn btn-link button-more" type="button" onClick={e => (window.location = "/itens")}>
           Ver mais acessorios
         </button>
       </Row>

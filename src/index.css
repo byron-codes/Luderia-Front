@@ -72,9 +72,21 @@ td:hover {
 .link-table {
   width: 100%;
   display: block;
-  color: black;
 }
 
-.mb-60{
+.mb-60 {
   margin-bottom: 60px;
+}
+
+.color-black {
+  color: black !important;
+}
+
+.btn-change-sale {
+  margin-top: 30px !important;
+  height: 40px;
+}
+
+.w-100-p {
+  width: 100% !important;
 }

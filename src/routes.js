@@ -21,6 +21,7 @@ import Login from "./screens/Login";
 import SalesClient from "./screens/SalesClient";
 import Sale from "./screens/Sale";
 import Profile from "./screens/Profile";
+import SaleChange from "./screens/SaleChange";
 
 
 export default props => (
@@ -34,7 +35,8 @@ export default props => (
       <Route path="/cart/address" component={BuyAddress} exact></Route>
       <Route path="/login" component={Login} exact></Route>
       <Route path="/sales" component={SalesClient} exact></Route>
-      <Route path="/admin/dashboard" component={Dashboard} exact></Route>
+      <Route path="/sale/change" component={SaleChange} exact></Route>
+      <Route path="/admin" component={Dashboard} exact></Route>
       <Route path="/admin/coupon" component={Coupon} exact></Route>
       <Route path="/admin/coupon/list" component={CouponList} exact></Route>
       <Route path="/admin/accessories" component={Accessories} exact></Route>
