@@ -27,6 +27,7 @@ import Devolutions from "./screens/Devolutions";
 import DevolutionsActions from "./screens/DevolutionsAction";
 import Shipping from "./screens/Shipping";
 import Reports from "./screens/Reports";
+import CouponClient from "./screens/CouponClient";
 
 export default props => (
   <Router>
@@ -38,6 +39,7 @@ export default props => (
       <Route path="/cart/card" component={BuyCard} exact></Route>
       <Route path="/cart/address" component={BuyAddress} exact></Route>
       <Route path="/login" component={Login} exact></Route>
+      <Route path="/user/coupon" component={CouponClient} exact></Route>
       <Route path="/sales" component={SalesClient} exact></Route>
       <Route path="/sale/change" component={SaleChange} exact></Route>
       <Route path="/sale" component={Sale} exact></Route>

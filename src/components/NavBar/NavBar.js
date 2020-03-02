@@ -128,6 +128,9 @@ export default class NavBar extends Component {
                   <a href="/sales" className="mt-2 mb-2">
                     Meus pedidos
                   </a>
+                  <a href="/user/coupon" className="mt-2 mb-2">
+                    Meus cupons
+                  </a>
                   <a href="/" className="mt-2 mb-2">
                     Sair
                   </a>
