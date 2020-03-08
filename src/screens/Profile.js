@@ -6,9 +6,84 @@ import { Row, Button, Card } from "react-bootstrap";
 import Grid from "../components/Layout/Grid";
 import SmallBox from "../components/Box/SmallBox";
 import LabelAndInput from "../components/Field/LabelAndInput";
-import swal from 'sweetalert'
+import swal from "sweetalert";
+import { baseURL } from "../endpoints";
+import axios from "axios";
+
+const initialState = {
+  id: 0,
+  name: "",
+  email: "",
+  nickname: "",
+  cpf: "",
+  password: "",
+  confirmPassword: "",
+  oldPassword: "",
+  newPassword: ""
+};
 
 export default class Cart extends Component {
+  state = { ...initialState };
+  constructor(props) {
+    super(props);
+    this.setAttr = this.setAttr.bind(this);
+    this.put = this.put.bind(this);
+    this.get = this.get.bind(this);
+    this.updatePassword = this.updatePassword.bind(this);
+    this.get();
+  }
+
+  setAttr(target, value) {
+    const temp = [];
+    temp[target] = value;
+    this.setState({
+      ...temp
+    });
+  }
+
+  put() {
+    axios.put(`${baseURL}/user/${this.props.match.params.id}`, this.state).then(
+      result =>
+        swal(
+          "Sucesso",
+          "O seu cadastro foi atualizado com sucesso",
+          "success"
+        ).then(
+          result => (window.location = `/profile/${this.props.match.params.id}`)
+        ),
+      error => console.log(error)
+    );
+  }
+
+  updatePassword() {
+    axios
+      .put(`${baseURL}/user/password/${this.props.match.params.id}`, {
+        password: this.state.newPassword
+      })
+      .then(
+        result =>
+          swal(
+            "Sucesso",
+            "Sua senha foi atualizada com succeso",
+            "success"
+          ).then(
+            result =>
+              (window.location = `/profile/${this.props.match.params.id}`)
+          ),
+        error => console.log(error)
+      );
+  }
+
+  get() {
+    axios.get(`${baseURL}/user/${this.props.match.params.id}`).then(
+      result => {
+        this.setState({ ...result.data });
+        console.log(this.state);
+      },
+      error => console.log(error)
+    );
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -31,27 +106,31 @@ export default class Cart extends Component {
                     cols="12 12 12 12"
                     class="d-flex justify-content-center "
                   >
-                    <h2 className="mt-3">Wagner006</h2>
+                    <h2 className="mt-3">{this.state.nickname}</h2>
                   </Grid>
                 </Card.Header>
                 <Card.Body>
                   <Row>
                     <Grid cols="4 4 4 4">
                       <LabelAndInput
+                        name="name"
                         label="Nome"
-                        value="Wagner de Souza"
+                        value={this.state.name}
+                        onChange={this.setAttr}
                       ></LabelAndInput>
                     </Grid>
                     <Grid cols="4 4 4 4">
                       <LabelAndInput
+                        name="email"
                         label="email"
-                        value="wagner006@gmail.com"
+                        value={this.state.email}
+                        onChange={this.setAttr}
                       ></LabelAndInput>
                     </Grid>
                     <Grid cols="4 4 4 4">
                       <LabelAndInput
                         label="CPF"
-                        value="111.111.111-11"
+                        value={this.state.cpf}
                         readOnly
                       ></LabelAndInput>
                     </Grid>
@@ -61,7 +140,7 @@ export default class Cart extends Component {
                       <Button
                         variant="outline-primary"
                         className="w-100-p"
-                        href="/cart/card"
+                        href={`/user/${this.props.match.params.id}/cards`}
                       >
                         Gerenciar cartões
                       </Button>
@@ -70,7 +149,7 @@ export default class Cart extends Component {
                       <Button
                         variant="outline-primary"
                         className="w-100-p"
-                        href="/cart/address"
+                        href={`/user/${this.props.match.params.id}/addresses`}
                       >
                         Gerenciar endereços
                       </Button>
@@ -79,15 +158,7 @@ export default class Cart extends Component {
                       <Button
                         variant="outline-success"
                         className="w-100-p"
-                        onClick={e =>
-                          swal(
-                            "Sucesso",
-                            "Dados alterados com sucesso",
-                            "success"
-                          ).then(value => {
-                            window.location = "/";
-                          })
-                        }
+                        onClick={this.put}
                       >
                         Atualizar dados
                       </Button>
@@ -97,28 +168,35 @@ export default class Cart extends Component {
                   <label>Alterar senha</label>
                   <Row>
                     <Grid cols="3 3 3 3">
-                      <LabelAndInput label="Senha antiga"></LabelAndInput>
+                      <LabelAndInput
+                        name="oldPassword"
+                        label="Senha antiga"
+                        value={this.state.oldPassword}
+                        onChange={this.setAttr}
+                      ></LabelAndInput>
                     </Grid>
                     <Grid cols="3 3 3 3">
-                      <LabelAndInput label="Nova senha"></LabelAndInput>
+                      <LabelAndInput
+                        name="newPassword"
+                        label="Nova senha"
+                        value={this.state.newPassword}
+                        onChange={this.setAttr}
+                      ></LabelAndInput>
                     </Grid>
                     <Grid cols="3 3 3 3">
-                      <LabelAndInput label="confirmar senha"></LabelAndInput>
+                      <LabelAndInput
+                        name="confirmPassword"
+                        label="Confirmar senha"
+                        value={this.state.confirmPassword}
+                        onChange={this.setAttr}
+                      ></LabelAndInput>
                     </Grid>
                     <Grid cols="3 3 3 3" class="d-flex justify-content-end">
                       <Button
                         variant="outline-success"
                         style={{ marginTop: "30px", height: "40px" }}
                         className="w-100-p"
-                        onClick={e =>
-                          swal(
-                            "Sucesso",
-                            "Senha alterada com sucesso",
-                            "success"
-                          ).then(value => {
-                            window.location = "/";
-                          })
-                        }
+                        onClick={this.updatePassword}
                       >
                         Alterar senha
                       </Button>

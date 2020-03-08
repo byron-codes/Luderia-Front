@@ -1,24 +1,19 @@
 import React from "react";
 
 export default props => (
-  <div className={`small-box ${props.color || ``}`}>
+  <div className={`small-box ${props.class || ``}`}>
     <div className={`inner ${props.title ? "mb-3" : ``}`}>
-      {props.title ? 
-        <span>{props.title}</span>
-       : 
-        <h3>{Math.floor(Math.random() * 250)}</h3>
-      }
-      <p>{props.text}</p>
+      {props.title ? <span>{props.title}</span> : <h3>{props.number}</h3>}
+      <p className={props.nohref ? `mb-5` : ""}>{props.text}</p>
     </div>
-    <div className="icon">
+    <div className={`icon ${props.iconClass || ``}`}>
       <i className={props.icon}></i>
     </div>
     {props.nohref ? (
-      <div className="mt-3"></div>
+      <div></div>
     ) : (
-      <a 
-        href={props.href} className={`small-box-footer ${props.aclass}`}>
-        {props.actionText || "Mais informações"}{" "}
+      <a href={props.href} className={`small-box-footer ${props.aclass}`}>
+        {props.actionText}
         <i className="ml-1 fas fa-arrow-circle-right"></i>
       </a>
     )}

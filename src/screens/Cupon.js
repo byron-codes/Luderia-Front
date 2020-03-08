@@ -2,16 +2,21 @@ import React, { Component } from "react";
 import LabelAndInput from "../components/Field/LabelAndInput";
 import { Row } from "react-bootstrap";
 import Container from "../components/Layout/Container";
-import axios from "axios";
 import Header from "../components/NavBar/NavBarAdmin";
 import Sidebar from "../components/SideBar/SideBar";
 import Footer from "../components/Footer/FooterAdmin";
+import Grid from "../components/Layout/Grid";
+import { baseURL } from "../endpoints";
+import swal from "sweetalert";
+import axios from "axios";
 
 const initialState = {
   name: "",
   value: 0,
   quantity: 0,
-  expirationDate: ""
+  expirationDate: "",
+  code: "",
+  description: ""
 };
 
 export default class Cupon extends Component {
@@ -20,6 +25,17 @@ export default class Cupon extends Component {
     super(props);
     this.setAttr = this.setAttr.bind(this);
     this.save = this.save.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.props.match.params.id !== undefined) {
+      axios.get(`${baseURL}/coupon/${this.props.match.params.id}`).then(result =>
+        this.setState({
+          ...result.data
+        })
+      );
+    }
+    console.log(this.state);
   }
 
   setAttr(target, value) {
@@ -31,7 +47,11 @@ export default class Cupon extends Component {
   }
 
   save() {
-    axios.post("http://localhost:8080/coupon", this.state).then(result => console.log(result));
+    axios.post(`${baseURL}/coupon`, this.state).then(
+      result =>
+        swal("Sucesso", "Cadastro de cupom efetuado com sucesso", "success"),
+      error => console.log(error)
+    );
   }
 
   render() {
@@ -51,7 +71,8 @@ export default class Cupon extends Component {
                   readOnly={false}
                   type="text"
                   onChange={this.setAttr}
-                  value={this.props.name}
+                  value={this.state.name}
+                  dataCy="name"
                 ></LabelAndInput>
                 <LabelAndInput
                   name="expirationDate"
@@ -60,7 +81,8 @@ export default class Cupon extends Component {
                   readOnly={false}
                   type="text"
                   onChange={this.setAttr}
-                  value={this.props.expirationDate}
+                  value={this.state.expirationDate}
+                  dataCy="expirationDate"
                 ></LabelAndInput>
                 <LabelAndInput
                   name="quantity"
@@ -70,7 +92,8 @@ export default class Cupon extends Component {
                   readOnly={false}
                   type="number"
                   onChange={this.setAttr}
-                  value={this.props.quantity}
+                  value={this.state.quantity}
+                  dataCy="quantity"
                 ></LabelAndInput>
                 <LabelAndInput
                   name="value"
@@ -80,16 +103,48 @@ export default class Cupon extends Component {
                   readOnly={false}
                   type="number"
                   onChange={this.setAttr}
-                  value={this.props.value}
+                  value={this.state.value}
+                  dataCy="value"
+                ></LabelAndInput>
+                <LabelAndInput
+                  name="description"
+                  cols="12 6"
+                  label="Descrição"
+                  placeholder="Descrição de cupons"
+                  readOnly={false}
+                  type="text"
+                  onChange={this.setAttr}
+                  value={this.state.description}
+                  dataCy="description"
+                ></LabelAndInput>
+                <LabelAndInput
+                  name="code"
+                  cols="12 6"
+                  label="Código"
+                  placeholder="Código do cupom"
+                  readOnly={false}
+                  type="text"
+                  onChange={this.setAttr}
+                  value={this.state.code}
+                  dataCy="code"
                 ></LabelAndInput>
               </Row>
               <Row>
-                <button type="button" className="btn btn-default">
-                  Cancelar
-            </button>
-                <button type="button" onClick={this.save} className="btn btn-success pull-right">
-                  Salvar
-            </button>
+                <Grid cols="6 6 6 6">
+                  <button type="button" className="btn btn-default">
+                    Cancelar
+                  </button>
+                </Grid>
+                <Grid cols="6 6 6 6" class="d-flex justify-content-end">
+                  <button
+                    type="button"
+                    onClick={this.save}
+                    className="btn btn-success pull-right"
+                    data-cy="btn-save"
+                  >
+                    Salvar
+                  </button>
+                </Grid>
               </Row>
             </Container>
           </div>

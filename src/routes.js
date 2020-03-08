@@ -10,14 +10,14 @@ import App from "./app";
 import ItensList from "./screens/ItensList";
 import Item from "./screens/Item";
 import Cart from "./screens/Cart";
-import BuyCard from "./screens/BuyCard";
-import BuyAddress from "./screens/BuyAddress";
+import BuyCard from "./screens/UserCard";
+import BuyAddress from "./screens/UserAddress";
 import Coupon from "./screens/Cupon";
 import CouponList from "./screens/CouponList";
 import Accessories from "./screens/Accessories";
 import AccessoriesList from "./screens/AccessoriesList";
 import Dashboard from "./screens/Dashboard";
-import Login from "./screens/Login";
+import Login from "./screens/Register";
 import SalesClient from "./screens/SalesClient";
 import Sale from "./screens/Sale";
 import Profile from "./screens/Profile";
@@ -36,17 +36,18 @@ export default props => (
       <Route path="/itens" component={ItensList} exact></Route>
       <Route path="/itens/*" component={Item} exact></Route>
       <Route path="/cart" component={Cart} exact></Route>
-      <Route path="/cart/card" component={BuyCard} exact></Route>
-      <Route path="/cart/address" component={BuyAddress} exact></Route>
-      <Route path="/login" component={Login} exact></Route>
+      <Route path="/user/:id/cards" component={BuyCard} exact></Route>
+      <Route path="/user/:id/addresses" component={BuyAddress} exact></Route>
+      <Route path="/register" component={Login} exact></Route>
       <Route path="/user/coupon" component={CouponClient} exact></Route>
       <Route path="/sales" component={SalesClient} exact></Route>
       <Route path="/sale/change" component={SaleChange} exact></Route>
       <Route path="/sale" component={Sale} exact></Route>
-      <Route path="/profile" component={Profile} exact></Route>
+      <Route path="/profile/:id" component={Profile} exact></Route>
       <Route path="/admin" component={Dashboard} exact></Route>
       <Route path="/admin/coupon" component={Coupon} exact></Route>
-      <Route path="/admin/coupon/list" component={CouponList} exact></Route>
+      <Route path="/admin/coupon/:id" component={Coupon} exact></Route>
+      <Route path="/admin/coupons" component={CouponList} exact></Route>
       <Route path="/admin/accessories" component={Accessories} exact></Route>
       <Route
         path="/admin/accessories/list"

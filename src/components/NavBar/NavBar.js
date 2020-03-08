@@ -3,11 +3,37 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import "../../imports";
 import Container from "../Layout/Container";
+import LabelAndInput from "../Field/LabelAndInput";
+import axios from "axios";
+import { baseURL } from "../../endpoints";
 
+const initialState = {
+  login: "",
+  password: "",
+  name: ""
+};
 export default class NavBar extends Component {
   state = {
+    ...initialState,
     logged: false
   };
+
+  constructor(props) {
+    super(props);
+    this.setAttr = this.setAttr.bind(this);
+    this.login = this.login.bind(this);
+    this.login();
+  }
+
+  setAttr(target, value) {
+    const temp = [];
+    temp[target] = value;
+    this.setState({
+      ...temp
+    });
+  }
+
+  login() {}
 
   render() {
     return (
@@ -40,8 +66,9 @@ export default class NavBar extends Component {
             <a
               className="nav-link"
               data-toggle="dropdown"
-              href="/cart"
+              href="#"
               aria-expanded="false"
+              onClick={e => (window.location = "/cart")}
             >
               <i
                 className="fas fa-shopping-cart"
@@ -71,7 +98,7 @@ export default class NavBar extends Component {
                   style={{ margin: "0px", marginLeft: "10px" }}
                   className="mouse-click"
                 >
-                  wagner006
+                  {this.state.name}
                 </label>
               ) : (
                 <div></div>
@@ -84,20 +111,20 @@ export default class NavBar extends Component {
                     <h4 className="m-0">Login</h4>
                   </div>
                   <div className="mt-3">
-                    <input
-                      className="form-control"
-                      type="text"
+                    <LabelAndInput
+                      name="login"
                       placeholder="Usuário"
-                      style={{ width: "250px" }}
-                    />
+                      value={this.state.login}
+                      onChange={this.setAttr}
+                    ></LabelAndInput>
                   </div>
                   <div className="mt-3">
-                    <input
-                      className="form-control"
-                      type="text"
-                      placeholder="Senha"
-                      style={{ width: "250px" }}
-                    />
+                    <LabelAndInput
+                      name="password"
+                      placeholder="Usuário"
+                      value={this.state.password}
+                      onChange={this.setAttr}
+                    ></LabelAndInput>
                   </div>
                   <Container class="forgot-password">
                     <a href="/">Esqueci minha senha</a>
@@ -106,7 +133,22 @@ export default class NavBar extends Component {
                     type="button"
                     className="btn btn-outline-dark mt-2 mb-2"
                     style={{ width: "125px" }}
-                    onClick={e => this.setState({ logged: true })}
+                    onClick={e =>
+                      axios
+                        .get(
+                          `${baseURL}/user/login?login=${this.state.login}&password=${this.state.password}`
+                        )
+                        .then(
+                          result => {
+                            this.setState({
+                              ...this.state,
+                              name: result.data.name,
+                              logged: true
+                            });
+                          },
+                          error => alert(error)
+                        )
+                    }
                   >
                     Entrar
                   </button>

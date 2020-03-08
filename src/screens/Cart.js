@@ -8,6 +8,7 @@ import SmallBox from "../components/Box/SmallBox";
 import swal from "sweetalert";
 import Input from "../components/Field/Input";
 import LabelAndInput from "../components/Field/LabelAndInput";
+import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
 
 export default class Cart extends Component {
   state = { coupon: false };
@@ -196,9 +197,10 @@ export default class Cart extends Component {
                   <SmallBox
                     title="XXXX XXXX XXXX 1234"
                     text="Maria das marias"
-                    icon="far fa-credit-card marsala-icon"
+                    icon="far fa-credit-card"
+                    iconClass="marsala-icon"
                     actionText="Trocar cartão"
-                    color="m-0"
+                    class="m-0"
                     aclass="marsala-box"
                     href="/cart/card"
                   ></SmallBox>

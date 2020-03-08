@@ -14,7 +14,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:test": "cypress run --no-exit -b chrome",
+    "cypress": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,6 +41,7 @@
     "admin-lte": "^3.0.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
+    "cypress": "^4.1.0",
     "font-awesome": "^4.7.0",
     "ionicons": "^5.0.0",
     "jquery": "^3.4.1",
