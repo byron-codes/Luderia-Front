@@ -16,6 +16,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "cypress:test": "cypress run --no-exit -b chrome",
+    "cypress:video": "cypress run --spec cypress/integration/**/*.spec.js",
     "cypress": "cypress open"
   },
   "eslintConfig": {
