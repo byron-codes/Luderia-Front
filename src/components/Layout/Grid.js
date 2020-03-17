@@ -28,7 +28,7 @@ export default class Grid extends Component {
     render() {
         const gridClasses = this.toCssClass(this.props.cols || '12')
         return (
-            <div className={gridClasses + (this.props.class || '')}>
+            <div className={gridClasses + (this.props.class || '')} key={this.props.key} data-cy={this.props.dataCy}>
                 {this.props.children}
             </div>
         )

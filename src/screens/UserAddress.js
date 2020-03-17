@@ -11,14 +11,21 @@ import CheckBox from "../components/Checkbox/CheckBox";
 import axios from "axios";
 import { baseURL } from "../endpoints";
 import swal from "sweetalert";
+import { cepMask } from "../mask";
+import Select from "react-select";
+import ItemBox from "../components/Box/ItemBox";
 
 const initialState = {
   addresses: [],
   cep: "",
   street: "",
   number: "",
-  cityId: "",
-  complement: ""
+  city: { label: "Selecione...", value: "" },
+  state: { label: "Selecione...", value: "" },
+  complement: "",
+  neighborhood: "",
+  states: [],
+  cities: []
 };
 
 export default class UserAddress extends Component {
@@ -27,16 +34,75 @@ export default class UserAddress extends Component {
     super(props);
     this.setAttr = this.setAttr.bind(this);
     this.getAddress = this.getAddress.bind(this);
+    this.getState = this.getState.bind(this);
     this.save = this.save.bind(this);
+    this.findState = this.findState.bind(this);
     this.getAddress();
+    this.getState();
+  }
+
+  findState(uf, city) {
+    this.state.states.forEach(item => {
+      if (item.label === (uf + "").toUpperCase()) {
+        this.setState({
+          state: item
+        });
+        this.getCities(this.state.state, city);
+      }
+    });
   }
 
   setAttr(target, value) {
+    if (target == "cep" && value.length == 9) {
+      axios
+        .get("https://viacep.com.br/ws/" + value.replace("-", "") + "/json/")
+        .then(result => {
+          this.findState(result.data.uf, result.data.localidade);
+          this.setState({
+            street: result.data.logradouro,
+            neighborhood: result.data.bairro
+          });
+        });
+    }
     const temp = [];
     temp[target] = value;
     this.setState({
       ...temp
     });
+  }
+
+  getState() {
+    axios.get(`${baseURL}/state`).then(
+      result => {
+        console.log(result.data);
+        const items = result.data.map(item => ({
+          label: item.initials,
+          value: item.id
+        }));
+        this.setState({ states: items });
+      },
+      error => console.log(error)
+    );
+  }
+
+  getCities(state, city) {
+    axios.get(`${baseURL}/city?stateId=${state.value}`).then(
+      result => {
+        const items = result.data.map(item => ({
+          label: item.name,
+          value: item.id
+        }));
+        this.setState({ cities: items, state: state });
+        this.state.cities.forEach(item => {
+          if (item.label === city + "") {
+            this.setState({
+              city: item
+            });
+          }
+        });
+      },
+      error => console.log(error)
+    );
   }
 
   getAddress() {
@@ -49,17 +115,35 @@ export default class UserAddress extends Component {
   }
 
   save() {
-    axios.post(`${baseURL}/address`, this.state).then(
+    const body = {
+      street: this.state.street,
+      number: this.state.number,
+      complement: this.state.complement,
+      neighborhood: this.state.neighborhood,
+      cep: this.state.cep,
+      cityId: this.state.city.value
+    };
+    axios.post(`${baseURL}/address`, body).then(
       result =>
         axios
           .put(
             `${baseURL}/user/${this.props.match.params.id}/address/${result.data.id}`
           )
-          .then(result =>
+          .then(resultUser =>
             swal(
               "Sucesso",
-              "O seu cadastro foi efetuado com sucesso",
-              "success"
+              "O seu endereço foi cadastrado com sucesso",
+              "success",
+              {
+                content: {
+                  element: "input",
+                  attributes: {
+                    type: "hidden",
+                    value: result.data.id,
+                    id: "addressSavedId"
+                  }
+                }
+              }
             ).then(result => {
               window.location = `/user/${this.props.match.params.id}/addresses`;
             })
@@ -68,6 +152,21 @@ export default class UserAddress extends Component {
       error => console.log(error)
     );
   }
+
+  delete(id) {
+    axios.delete(`${baseURL}/address?id=${id}`).then(
+      result =>
+        swal(
+          "Sucesso",
+          "O seu endereço foi deletado com sucesso",
+          "success"
+        ).then(result => {
+          window.location.reload()
+        }),
+      error => console.log(error)
+    );
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -78,17 +177,23 @@ export default class UserAddress extends Component {
               <div className="card">
                 <div className="card-header">
                   <div className="row mb-3">
-                    {this.state.addresses.map(address => (
-                      <Grid cols="3 3 3 3" key={address.id}>
-                        <SmallBox
-                          title={`${address.street}, ${address.number}`}
-                          text={address.neighborhood}
-                          icon="fas fa-map-marker-alt blue-icon"
-                          color="m-0"
-                          nohref
-                        ></SmallBox>
-                      </Grid>
-                    ))}
+                    {this.state.addresses.map(address => {
+                      console.log(address)
+                      return (
+                        <Grid cols="3 3 3 3" key={address.id}>
+                          <ItemBox
+                            title={`${address.street}, ${address.number}`}
+                            text={address.neighborhood}
+                            subText={`${address.city.name} - ${address.state.initials}`}
+                            icon="fas fa-map-marker-alt"
+                            iconColor="blue-icon"
+                            id={address.id}
+                            onClick={this.delete}
+                            iconDataCy={`address-${address.id}`}
+                          ></ItemBox>
+                        </Grid>
+                      );
+                    })}
                   </div>
                 </div>
                 <div className="card-body">
@@ -102,6 +207,8 @@ export default class UserAddress extends Component {
                       name="cep"
                       onChange={this.setAttr}
                       value={this.state.cep}
+                      mask={cepMask}
+                      dataCy="cep"
                     ></LabelAndInput>
                     <LabelAndInput
                       cols="3 3 3 3"
@@ -116,6 +223,7 @@ export default class UserAddress extends Component {
                       name="number"
                       onChange={this.setAttr}
                       value={this.state.number}
+                      dataCy="number"
                     ></LabelAndInput>
                     <LabelAndInput
                       cols="3 3 3 3"
@@ -126,22 +234,35 @@ export default class UserAddress extends Component {
                     ></LabelAndInput>
                   </Row>
                   <Row>
+                    <Grid cols="2 2 2 2">
+                      <label>Estado</label>
+                      <Select
+                        options={this.state.states}
+                        isSearchable
+                        placeholder="Selecione o estado..."
+                        onChange={e => this.getCities(e, "")}
+                        value={this.state.state}
+                      />
+                    </Grid>
+                    <Grid cols="3 3 3 3">
+                      <label>Cidade</label>
+                      <Select
+                        options={this.state.cities}
+                        isSearchable
+                        placeholder="Selecione a cidade..."
+                        onChange={e => this.setAttr("city", e)}
+                        value={this.state.city}
+                      />
+                    </Grid>
                     <LabelAndInput
-                      cols="4 4 4 4"
-                      label="Cidade"
-                      name="cityId"
-                      onChange={this.setAttr}
-                      value={this.state.cityId}
-                    ></LabelAndInput>
-                    <LabelAndInput
-                      cols="4 4 4 4"
+                      cols="3 3 3 3"
                       label="Complemento"
                       name="complement"
                       onChange={this.setAttr}
                       value={this.state.complement}
                     ></LabelAndInput>
                     <Grid cols="2 2 2 2" class="mt-4">
-                      <CheckBox text="Salvar como favorito"></CheckBox>
+                      {/* <CheckBox text="Salvar como favorito"></CheckBox> */}
                     </Grid>
                     <Grid cols="2 2 2 2" class="d-flex justify-content-end">
                       <Button
@@ -149,6 +270,7 @@ export default class UserAddress extends Component {
                         style={{ width: "100%", height: "50px" }}
                         className="mt-3"
                         onClick={this.save}
+                        data-cy="btn-save"
                       >
                         Cadastrar
                       </Button>

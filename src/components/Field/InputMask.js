@@ -7,7 +7,7 @@ export default props => (
     <div className="form-group">
       <input
         data-cy={props.dataCy}
-        onChange={e => props.onChange(props.name, (props.mask ? props.mask(e.target.value) : e.target.value))}
+        onChange={e => props.onChange(props.name, e.target.value)}
         value={props.value}
         name={props.name}
         className="form-control"

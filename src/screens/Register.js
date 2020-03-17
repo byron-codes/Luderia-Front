@@ -7,6 +7,7 @@ import FooterPaint from "../components/Footer/FooterPaint";
 import { baseURL } from "../endpoints";
 import swal from "sweetalert";
 import axios from "axios";
+import { cpfMask, cpfUnMask } from "../mask";
 
 const initialState = {
   name: { value: "", errors: [] },
@@ -47,7 +48,7 @@ export default class Register extends Component {
       name: this.state.name.value,
       email: this.state.email.value,
       nickname: this.state.nickname.value,
-      cpf: this.state.cpf.value,
+      cpf: this.state.cpf.value.replace(/[^\d]+/g, ""),
       password: this.state.password.value,
       confirmPassword: this.state.confirmPassword.value
     };
@@ -60,7 +61,7 @@ export default class Register extends Component {
           "success"
         ).then(result => (window.location = "/")),
       error => {
-        console.log(error.response.data)
+        console.log(error.response.data.errors)
         error.response.data.errors.map(error => {
           const itemState = [];
           itemState[error.field] = this.state[error.field];
@@ -135,11 +136,11 @@ export default class Register extends Component {
                       name="cpf"
                       cols="12 12 12 12"
                       placeholder="CPF"
-                      type="number"
                       onChange={this.setAttr}
                       value={this.state.cpf.value}
                       errors={this.state.cpf.errors}
                       dataCy="cpf"
+                      mask={cpfMask}
                     ></Input>
                   </Row>
                   <Row>

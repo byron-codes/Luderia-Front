@@ -1,23 +1,62 @@
-import React from "react";
+import React, { Component } from "react";
+import $ from "jquery";
+import "admin-lte/plugins/datatables/jquery.dataTables";
+import "admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4";
+import "admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.css";
 
-export default props => {
-  function renderHead() {
-    const itens = props.head || [];
+export default class Table extends Component {
+  componentDidUpdate() {
+    $("#dataTable").DataTable({
+      language: {
+        sProcessing: "Processando...",
+        sLengthMenu: "Mostrar _MENU_ registros",
+        sZeroRecords: "Nenhum resultado encontrado",
+
+        sEmptyTable: "Nenhum dado disponível nesta tabela",
+        sInfo:
+          "Mostrando registros de _START_ até _END_ de um total de _TOTAL_ registros",
+        sInfoEmpty: "Mostrando registros de 0 até 0 de um total de 0 registros",
+        sInfoFiltered: "(filtrado de um total de _MAX_ registros)",
+        sInfoPostFix: "",
+        sSearch: "Buscar:",
+        sUrl: "",
+        sInfoThousands: ",",
+        sLoadingRecords: "Carregando...",
+        oPaginate: {
+          sFirst: "Primero",
+          sLast: "Último",
+          sNext: "Seguinte",
+          sPrevious: "Anterior"
+        }
+      }
+    });
+  }
+  render() {
     return (
-      <tr>
-        {itens.map(value => (
-          <th key={value} scope="col" className="text-white">
-            {value}
-          </th>
-        ))}
-      </tr>
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">{this.props.name}</h3>
+        </div>
+        <div className="card-body">
+          <table id="dataTable" className="table table-bordered table-striped">
+            <thead>
+              <tr>
+                {this.props.head.map(element => (
+                  <th>{element}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>{this.props.rows.length > 0 ? this.props.rows : null}</tbody>
+            <tfoot>
+              <tr>
+                {this.props.head.map(element => (
+                  <th>{element}</th>
+                ))}
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
     );
   }
-
-  return (
-    <table className="table table-bordered table-striped">
-      <thead className="bg-marsala">{renderHead()}</thead>
-      <tbody>{props.rows.length > 0 ? props.rows : null}</tbody>
-    </table>
-  );
-};
+}

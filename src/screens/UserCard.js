@@ -11,12 +11,14 @@ import CheckBox from "../components/Checkbox/CheckBox";
 import axios from "axios";
 import { baseURL } from "../endpoints";
 import swal from "sweetalert";
+import { creditCardMask, validCardMask, numberMask } from "../mask";
+import ItemBox from "../components/Box/ItemBox";
 
 const initialState = {
   cards: [],
   number: "",
   name: "",
-  validate: "",
+  expirationDate: "",
   cvv: ""
 };
 
@@ -47,18 +49,46 @@ export default class UserCard extends Component {
     );
   }
 
+  delete(id) {
+    axios.delete(`${baseURL}/credit-card?id=${id}`).then(
+      result =>
+        swal(
+          "Sucesso",
+          "O seu cartão foi deletado com sucesso",
+          "success"
+        ).then(result => {
+          window.location.reload()
+        }),
+      error => console.log(error)
+    );
+  }
+
   save() {
-    axios.post(`${baseURL}/credit-card`, this.state).then(
+    const body = this.state;
+    body.number = body.number.replace(/[^\d]+/g, "");
+    body.expirationDate = body.expirationDate.replace(/[^\d]+/g, "");
+    body.cvv = body.cvv.replace(/[^\d]+/g, "");
+    axios.post(`${baseURL}/credit-card`, body).then(
       result =>
         axios
           .put(
             `${baseURL}/user/${this.props.match.params.id}/card/${result.data.id}`
           )
-          .then(result =>
+          .then(resultUser =>
             swal(
               "Sucesso",
-              "O seu cadastro foi efetuado com sucesso",
-              "success"
+              "O seu cartão foi cadastrado com sucesso",
+              "success",
+              {
+                content: {
+                  element: "input",
+                  attributes: {
+                    type: "hidden",
+                    value: result.data.id,
+                    id: "cardSavedId"
+                  }
+                }
+              }
             ).then(result => {
               window.location = `/user/${this.props.match.params.id}/cards`;
             })
@@ -72,21 +102,24 @@ export default class UserCard extends Component {
     return (
       <React.Fragment>
         <NavBar></NavBar>
-        <Container class="mt-100">
+        <Container class="mt-100 mb-60">
           <Row>
             <Grid cols="12 12 12 12">
               <div className="card">
                 <div className="card-header">
                   <div className="row mb-3">
                     {this.state.cards.map(card => (
-                      <Grid cols="3 3 3 3">
-                        <SmallBox
+                      <Grid cols="3 3 3 3" key={card.id}>
+                        <ItemBox
                           title={`XXXX XXXX XXXX ${card.number.substr(12)}`}
                           text={card.name}
-                          icon="far fa-credit-card marsala-icon"
-                          color="m-0"
-                          nohref
-                        ></SmallBox>
+                          subText={card.expirationDate}
+                          icon="far fa-credit-card"
+                          iconColor="marsala-icon"
+                          id={card.id}
+                          onClick={this.delete}
+                          iconDataCy={`card-${card.id}`}
+                        ></ItemBox>
                       </Grid>
                     ))}
                   </div>
@@ -102,20 +135,25 @@ export default class UserCard extends Component {
                       name="number"
                       onChange={this.setAttr}
                       value={this.state.number}
+                      mask={creditCardMask}
+                      dataCy="card-number"
                     ></LabelAndInput>
                     <LabelAndInput
                       cols="3 3 3 3"
-                      label="Nome do títular"
+                      label="Nome gravado no cartão"
                       name="name"
                       onChange={this.setAttr}
                       value={this.state.name}
+                      dataCy="card-name"
                     ></LabelAndInput>
                     <LabelAndInput
                       cols="3 3 3 3"
                       label="Vencimento"
-                      name="validate"
+                      name="expirationDate"
                       onChange={this.setAttr}
-                      value={this.state.validate}
+                      value={this.state.expirationDate}
+                      mask={validCardMask}
+                      dataCy="card-valid"
                     ></LabelAndInput>
                     <LabelAndInput
                       cols="3 3 3 3"
@@ -123,14 +161,21 @@ export default class UserCard extends Component {
                       name="cvv"
                       onChange={this.setAttr}
                       value={this.state.cvv}
+                      maxlength="4"
+                      mask={numberMask}
+                      dataCy="card-cvv"
                     ></LabelAndInput>
                   </Row>
                   <Row>
                     <Grid cols="10 10 10 10" class="d-flex justify-content-end">
-                      <CheckBox text="Salvar como favorito"></CheckBox>
+                      {/* <CheckBox text="Salvar como favorito"></CheckBox> */}
                     </Grid>
                     <Grid cols="2 2 2 2" class="d-flex justify-content-end">
-                      <Button variant="outline-success" onClick={this.save}>
+                      <Button
+                        variant="outline-success"
+                        onClick={this.save}
+                        data-cy="btn-save"
+                      >
                         Cadastrar
                       </Button>
                     </Grid>
@@ -141,7 +186,7 @@ export default class UserCard extends Component {
             <Grid cols="6 6 6 6"></Grid>
           </Row>
         </Container>
-        <Footer fix></Footer>
+        <Footer></Footer>
       </React.Fragment>
     );
   }

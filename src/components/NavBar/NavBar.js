@@ -10,7 +10,8 @@ import { baseURL } from "../../endpoints";
 const initialState = {
   login: "",
   password: "",
-  name: ""
+  name: "",
+  id: ""
 };
 export default class NavBar extends Component {
   state = {
@@ -82,7 +83,7 @@ export default class NavBar extends Component {
               </span>
             </a>
           </li>
-          <li className="nav-item dropdown">
+          <li className="nav-item dropdown" data-cy="user-picture">
             <a
               className="nav-link"
               data-toggle="dropdown"
@@ -111,25 +112,33 @@ export default class NavBar extends Component {
                     <h4 className="m-0">Login</h4>
                   </div>
                   <div className="mt-3">
-                    <LabelAndInput
+                    <input
                       name="login"
                       placeholder="Usuário"
                       value={this.state.login}
-                      onChange={this.setAttr}
-                    ></LabelAndInput>
+                      onChange={e => this.setAttr("login", e.target.value)}
+                      className="form-control"
+                      style={{ width: "250px" }}
+                      data-cy="login"
+                    ></input>
                   </div>
                   <div className="mt-3">
-                    <LabelAndInput
+                    <input
                       name="password"
-                      placeholder="Usuário"
+                      placeholder="senha"
+                      type="password"
                       value={this.state.password}
-                      onChange={this.setAttr}
-                    ></LabelAndInput>
+                      onChange={e => this.setAttr("password", e.target.value)}
+                      className="form-control"
+                      style={{ width: "250px" }}
+                      data-cy="password"
+                    ></input>
                   </div>
                   <Container class="forgot-password">
                     <a href="/">Esqueci minha senha</a>
                   </Container>
                   <button
+                    data-cy="btn-login"
                     type="button"
                     className="btn btn-outline-dark mt-2 mb-2"
                     style={{ width: "125px" }}
@@ -143,7 +152,8 @@ export default class NavBar extends Component {
                             this.setState({
                               ...this.state,
                               name: result.data.name,
-                              logged: true
+                              logged: true,
+                              id: result.data.id
                             });
                           },
                           error => alert(error)
@@ -164,13 +174,16 @@ export default class NavBar extends Component {
             ) : (
               <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <div className="d-flex align-items-center flex-column">
-                  <a href="/profile" className="mt-2 mb-2">
+                  <a href={`/user/${this.state.id}`} className="mt-2 mb-2" data-cy="my-account">
                     Minha conta
                   </a>
                   <a href="/sales" className="mt-2 mb-2">
                     Meus pedidos
                   </a>
-                  <a href="/user/coupon" className="mt-2 mb-2">
+                  <a
+                    href={`/user/${this.state.id}/coupon`}
+                    className="mt-2 mb-2"
+                  >
                     Meus cupons
                   </a>
                   <a href="/" className="mt-2 mb-2">

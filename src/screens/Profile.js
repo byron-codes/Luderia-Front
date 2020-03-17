@@ -9,17 +9,27 @@ import LabelAndInput from "../components/Field/LabelAndInput";
 import swal from "sweetalert";
 import { baseURL } from "../endpoints";
 import axios from "axios";
+import { cpfMask } from "../mask";
 
 const initialState = {
-  id: 0,
-  name: "",
-  email: "",
-  nickname: "",
-  cpf: "",
-  password: "",
-  confirmPassword: "",
-  oldPassword: "",
-  newPassword: ""
+  items: {
+    id: 0,
+    name: "",
+    email: "",
+    nickname: "",
+    cpf: "",
+    confirmPassword: "",
+    oldPassword: "",
+    newPassword: ""
+  },
+  errors: {
+    name: [],
+    email: [],
+    cpf: [],
+    confirmPassword: [],
+    oldPassword: [],
+    newPassword: []
+  }
 };
 
 export default class Cart extends Component {
@@ -34,32 +44,53 @@ export default class Cart extends Component {
   }
 
   setAttr(target, value) {
-    const temp = [];
-    temp[target] = value;
+    const temp = this.state;
+    temp.items[target] = value;
     this.setState({
       ...temp
     });
   }
 
   put() {
-    axios.put(`${baseURL}/user/${this.props.match.params.id}`, this.state).then(
-      result =>
-        swal(
-          "Sucesso",
-          "O seu cadastro foi atualizado com sucesso",
-          "success"
-        ).then(
-          result => (window.location = `/profile/${this.props.match.params.id}`)
-        ),
-      error => console.log(error)
-    );
+    this.state.errors.name = [];
+    this.state.errors.email = [];
+    this.setState({ ...this.state.items, ...this.state.errors });
+    axios
+      .put(`${baseURL}/user/${this.props.match.params.id}`, this.state.items)
+      .then(
+        result =>
+          swal(
+            "Sucesso",
+            "O seu cadastro foi atualizado com sucesso",
+            "success"
+          ).then(
+            result => (window.location = `/user/${this.props.match.params.id}`)
+          ),
+        error => {
+          console.log(error.response.data);
+          error.response.data.errors.map(error => {
+            this.state.errors[error.field].push(error.defaultMessage);
+            this.setState({
+              ...this.state
+            });
+          });
+        }
+      );
   }
 
   updatePassword() {
+    this.state.errors.oldPassword = [];
+    this.state.errors.newPassword = [];
+    this.state.errors.confirmPassword = [];
+    this.setState({ ...this.state.items, ...this.state.errors });
+    const items = {
+      oldPassword: this.state.items.oldPassword,
+      newPassword: this.state.items.newPassword,
+      confirmPassword: this.state.items.confirmPassword,
+      id: this.props.match.params.id
+    };
     axios
-      .put(`${baseURL}/user/password/${this.props.match.params.id}`, {
-        password: this.state.newPassword
-      })
+      .put(`${baseURL}/user/password/${this.props.match.params.id}`, items)
       .then(
         result =>
           swal(
@@ -70,15 +101,23 @@ export default class Cart extends Component {
             result =>
               (window.location = `/profile/${this.props.match.params.id}`)
           ),
-        error => console.log(error)
+        error => {
+          error.response.data.errors.map(error => {
+            this.state.errors[error.field].push(error.defaultMessage);
+            this.setState({
+              ...this.state
+            });
+          });
+        }
       );
   }
 
   get() {
     axios.get(`${baseURL}/user/${this.props.match.params.id}`).then(
       result => {
-        this.setState({ ...result.data });
-        console.log(this.state);
+        this.setState({ items: result.data });
+        this.state.items.cpf = cpfMask(this.state.items.cpf);
+        this.setState({ ...this.state });
       },
       error => console.log(error)
     );
@@ -94,13 +133,38 @@ export default class Cart extends Component {
               <Card>
                 <Card.Header className="row">
                   <Grid
-                    cols="12 12 12 12"
+                    cols="4 4 4 4"
                     class="d-flex justify-content-center "
-                  >
+                  ></Grid>
+                  <Grid cols="4 4 4 4" class="d-flex justify-content-center ">
                     <i
                       className="fas fa-user-circle"
                       style={{ fontSize: "100px" }}
                     ></i>
+                  </Grid>
+                  <Grid cols="4 4 4 4" class="d-flex justify-content-end ">
+                    <Button
+                      data-cy="btn-delete"
+                      variant="outline-danger"
+                      style={{ height: "fit-content" }}
+                      onClick={e =>
+                        axios
+                          .delete(
+                            `${baseURL}/user?id=${this.props.match.params.id}`
+                          )
+                          .then(
+                            result =>
+                              swal(
+                                "Sucesso",
+                                "Sua conta foi fechada com sucesso",
+                                "success"
+                              ).then(result => (window.location = "/")),
+                            error => console.log(error)
+                          )
+                      }
+                    >
+                      <i className="far fa-sad-tear mr-2"></i> Fechar conta
+                    </Button>
                   </Grid>
                   <Grid
                     cols="12 12 12 12"
@@ -115,22 +179,29 @@ export default class Cart extends Component {
                       <LabelAndInput
                         name="name"
                         label="Nome"
-                        value={this.state.name}
+                        value={this.state.items.name}
+                        errors={this.state.errors.name}
                         onChange={this.setAttr}
+                        dataCy="name"
                       ></LabelAndInput>
                     </Grid>
                     <Grid cols="4 4 4 4">
                       <LabelAndInput
                         name="email"
-                        label="email"
-                        value={this.state.email}
+                        label="E-mail"
+                        value={this.state.items.email}
+                        errors={this.state.errors.email}
                         onChange={this.setAttr}
+                        dataCy="email"
                       ></LabelAndInput>
                     </Grid>
                     <Grid cols="4 4 4 4">
                       <LabelAndInput
+                        name="cpf"
                         label="CPF"
-                        value={this.state.cpf}
+                        value={this.state.items.cpf}
+                        errors={this.state.errors.cpf}
+                        onChange={this.setAttr}
                         readOnly
                       ></LabelAndInput>
                     </Grid>
@@ -159,6 +230,7 @@ export default class Cart extends Component {
                         variant="outline-success"
                         className="w-100-p"
                         onClick={this.put}
+                        data-cy="btn-update"
                       >
                         Atualizar dados
                       </Button>
@@ -171,7 +243,9 @@ export default class Cart extends Component {
                       <LabelAndInput
                         name="oldPassword"
                         label="Senha antiga"
-                        value={this.state.oldPassword}
+                        type="password"
+                        value={this.state.items.oldPassword}
+                        errors={this.state.errors.oldPassword}
                         onChange={this.setAttr}
                       ></LabelAndInput>
                     </Grid>
@@ -179,7 +253,9 @@ export default class Cart extends Component {
                       <LabelAndInput
                         name="newPassword"
                         label="Nova senha"
-                        value={this.state.newPassword}
+                        type="password"
+                        value={this.state.items.newPassword}
+                        errors={this.state.errors.newPassword}
                         onChange={this.setAttr}
                       ></LabelAndInput>
                     </Grid>
@@ -187,7 +263,9 @@ export default class Cart extends Component {
                       <LabelAndInput
                         name="confirmPassword"
                         label="Confirmar senha"
-                        value={this.state.confirmPassword}
+                        type="password"
+                        value={this.state.items.confirmPassword}
+                        errors={this.state.errors.confirmPassword}
                         onChange={this.setAttr}
                       ></LabelAndInput>
                     </Grid>

@@ -17,9 +17,8 @@ export default props => (
 
     <MenuTag text="Produtos"></MenuTag>
     <MenuTree icon="fas fa-dice" text="Jogos">
-      <MenuItem icon="far fa-dot-circle" text="Cadastrar"></MenuItem>
-      <MenuItem icon="far fa-dot-circle" text="Pesquisar"></MenuItem>
-      <MenuItem icon="far fa-dot-circle" text="Estoque"></MenuItem>
+      <MenuItem icon="far fa-dot-circle" text="Cadastrar" href="/admin/game"></MenuItem>
+      <MenuItem icon="far fa-dot-circle" text="Pesquisar" href="/admin/games"></MenuItem>
     </MenuTree>
     <MenuTree icon="fas fa-plus-circle" text="Espansões">
       <MenuItem icon="far fa-dot-circle" text="Cadastrar"></MenuItem>
@@ -53,13 +52,13 @@ export default props => (
       text="Pesquisar"
     ></MenuItem>
     </MenuTree>
-    {/* <MenuTree icon="fas fa-users" text="Usuário">
+    <MenuTree icon="fas fa-users" text="Usuário">
     <MenuItem
-      href="/coupon/list"
+      href="/admin/users"
       icon="far fa-dot-circle"
       text="Pesquisar"
     ></MenuItem>
-    </MenuTree> */}
+    </MenuTree>
     <MenuTree icon="fas fa-chart-pie" text="Relatórios">
     <MenuItem
       href="/admin/reports"
