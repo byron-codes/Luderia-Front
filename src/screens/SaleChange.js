@@ -4,7 +4,6 @@ import Footer from "../components/Footer/Footer";
 import Container from "../components/Layout/Container";
 import { Row, Button, Card } from "react-bootstrap";
 import Grid from "../components/Layout/Grid";
-import SmallBox from "../components/Box/SmallBox";
 import Select from "react-select";
 import LabelAndInput from "../components/Field/LabelAndInput";
 import Table from "../components/Table/Table";

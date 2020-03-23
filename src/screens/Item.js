@@ -4,9 +4,60 @@ import Footer from "../components/Footer/Footer";
 import Container from "../components/Layout/Container";
 import { Row, Button } from "react-bootstrap";
 import Grid from "../components/Layout/Grid";
-import LabelAndInput from "../components/Field/LabelAndInput";
+import axios from "axios";
+import { baseURL } from "../endpoints";
+import { doubleToReal } from "../util/converters";
+import { cepMask } from "../mask";
+import Input from "../components/Field/Input";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { addItem } from "../container/cartActions";
 
-export default class Item extends Component {
+const initialState = {
+  id: 0,
+  name: "",
+  description: "",
+  image: "",
+  value: "",
+  cep: ""
+};
+class Item extends Component {
+  state = { ...initialState };
+
+  constructor(props) {
+    super(props);
+    this.calcFrete = this.calcFrete.bind(this);
+  }
+
+  componentDidMount() {
+    axios
+      .get(`${baseURL}/product/${this.props.match.params.id}`)
+      .then(result =>
+        this.setState({
+          ...result.data,
+          image: `${baseURL}/product/${result.data.id}/image`
+        })
+      );
+  }
+
+  calcFrete(target, value) {
+    if (value.length === 9) {
+      axios
+        .get(
+          `http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx?nCdEmpresa=&sDsSenha=&sCepOrigem=01451001&sCepDestino=${value.replace(
+            "-",
+            ""
+          )}&nVlPeso=1&nCdFormato=1&nVlComprimento=20&nVlAltura=20&nVlLargura=20&sCdMaoPropria=n&nVlValorDeclarado=0&sCdAvisoRecebimento=n&nCdServico=04510&nVlDiametro=0&StrRetorno=xml&nIndicaCalculo=3`
+        )
+        .then(result => console.log(result));
+    }
+    const temp = [];
+    temp[target] = value;
+    this.setState({
+      ...temp
+    });
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -16,28 +67,19 @@ export default class Item extends Component {
             <Grid cols="3 3 3 3">
               <div>
                 <img
-                  src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
-                  style={{ maxHeight: "100%", maxWidth: "100%" }}
+                  src={this.state.image}
+                  style={{
+                    maxWidth: "325px",
+                    maxHeight: "325px",
+                    minWidth: "325px",
+                    minHeight: "325px"
+                  }}
                 ></img>
               </div>
             </Grid>
             <Grid cols="6 6 6 6">
-              <label>Ticket to ride - Europe</label>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse tempor massa ligula, sit amet iaculis urna blandit
-                commodo. Class aptent taciti sociosqu ad litora torquent per
-                conubia nostra, per inceptos himenaeos. Nunc sapien eros,
-                dignissim ac dui ut, tincidunt finibus mi. Quisque lacinia nisi
-                et ante tristique, sed dictum justo ultricies. Nulla rutrum
-                pretium faucibus. Etiam finibus congue congue. Fusce maximus
-                odio leo, pretium placerat risus porta ac. Mauris a dolor
-                ultrices, bibendum lacus vitae, porta lacus. Aenean mi libero,
-                feugiat ac semper a, porttitor eget diam. Sed enim tortor,
-                tincidunt eu vulputate eu, vehicula vitae quam. Donec cursus
-                sodales velit, nec vulputate turpis pharetra eu. Duis cursus
-                feugiat felis, sit amet posuere tellus molestie sed.
-              </p>
+              <label>{this.state.name}</label>
+              <p>{this.state.description}</p>
             </Grid>
             <Grid cols="3 3 3 3">
               <div className="card">
@@ -47,7 +89,7 @@ export default class Item extends Component {
                       cols="12 12 12 12"
                       class="d-flex justify-content-center"
                     >
-                      <h4>R$ 700,00</h4>
+                      <h4>{doubleToReal(this.state.value)}</h4>
                     </Grid>
                   </Row>
                 </div>
@@ -55,13 +97,14 @@ export default class Item extends Component {
                   <div className="form-group">
                     <label>Frete e prazo</label>
                     <Row>
-                      <Grid cols="9 9 9 9">
-                        <input
-                          className="form-control"
-                          placeholder="00000-000"
-                          type="text"
-                        ></input>
-                      </Grid>
+                      <Input
+                        name="cep"
+                        cols="9 9 9 9"
+                        placeholder="00000-000"
+                        onChange={this.calcFrete}
+                        value={this.state.cep}
+                        mask={cepMask}
+                      ></Input>
                       <Grid cols="3 3 3 3">
                         <Button type="button" variant="outline-primary">
                           OK
@@ -76,7 +119,11 @@ export default class Item extends Component {
                       cols="12 12 12 12"
                       class="d-flex justify-content-center"
                     >
-                      <Button type="button" variant="outline-primary" onClick={e => (window.location = "/cart")}>
+                      <Button
+                        type="button"
+                        variant="outline-primary"
+                        onClick={() => this.props.addItem(this.state)}
+                      >
                         Adicionar ao carrinho
                       </Button>
                     </Grid>
@@ -91,3 +138,11 @@ export default class Item extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  items: state.cart.items,
+  coupon: state.cart.coupon
+});
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ addItem }, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(Item);

@@ -1,4 +1,4 @@
-import React, { Profiler } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -37,7 +37,7 @@ export default props => (
     <Switch>
       <Route path="/" component={App} exact></Route>
       <Route path="/itens" component={ItensList} exact></Route>
-      <Route path="/itens/*" component={Item} exact></Route>
+      <Route path="/itens/:id" component={Item} exact></Route>
       <Route path="/cart" component={Cart} exact></Route>
       <Route path="/user/:id/cards" component={BuyCard} exact></Route>
       <Route path="/user/:id/addresses" component={BuyAddress} exact></Route>

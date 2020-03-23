@@ -13,6 +13,9 @@ import { baseURL } from "../endpoints";
 import swal from "sweetalert";
 import { creditCardMask, validCardMask, numberMask } from "../mask";
 import ItemBox from "../components/Box/ItemBox";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { selectCard } from "../container/cardActions";
 
 const initialState = {
   cards: [],
@@ -22,7 +25,7 @@ const initialState = {
   cvv: ""
 };
 
-export default class UserCard extends Component {
+class UserCard extends Component {
   state = { ...initialState };
   constructor(props) {
     super(props);
@@ -57,7 +60,7 @@ export default class UserCard extends Component {
           "O seu cartão foi deletado com sucesso",
           "success"
         ).then(result => {
-          window.location.reload()
+          window.location.reload();
         }),
       error => console.log(error)
     );
@@ -110,16 +113,34 @@ export default class UserCard extends Component {
                   <div className="row mb-3">
                     {this.state.cards.map(card => (
                       <Grid cols="3 3 3 3" key={card.id}>
-                        <ItemBox
+                        <SmallBox
                           title={`XXXX XXXX XXXX ${card.number.substr(12)}`}
                           text={card.name}
-                          subText={card.expirationDate}
+                          subText={`${card.expirationDate.slice(
+                            0,
+                            2
+                          )}/${card.expirationDate.slice(2, 4)}`}
+                          icon="far fa-credit-card"
+                          iconClass="marsala-icon"
+                          id={card.id}
+                          onClick={() => {
+                            this.props.selectCard(card);
+                            window.location = "/cart";
+                          }}
+                          aclass="blue-box"
+                          iconDataCy={`card-${card.id}`}
+                          actionText="Selecionar cartão"
+                        />
+                        {/* <ItemBox
+                          title={`XXXX XXXX XXXX ${card.number.substr(12)}`}
+                          text={card.name}
+                          subText={`${card.expirationDate.slice(0, 2)}/${card.expirationDate.slice(2, 4)}`}
                           icon="far fa-credit-card"
                           iconColor="marsala-icon"
                           id={card.id}
                           onClick={this.delete}
                           iconDataCy={`card-${card.id}`}
-                        ></ItemBox>
+                        ></ItemBox> */}
                       </Grid>
                     ))}
                   </div>
@@ -191,3 +212,7 @@ export default class UserCard extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ selectCard }, dispatch);
+export default connect(null, mapDispatchToProps)(UserCard);

@@ -174,7 +174,7 @@ export default class Game extends Component {
               }
             }
           }
-        ).then(result => (window.location = `admin/games`)),
+        ).then(result => (window.location = `/admin/games`)),
       error => {
         error.response.data.errors.map(error => {
           this.state.items.value = realMask(this.state.items.value + "");

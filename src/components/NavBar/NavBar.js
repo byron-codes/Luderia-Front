@@ -3,20 +3,20 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import "../../imports";
 import Container from "../Layout/Container";
-import LabelAndInput from "../Field/LabelAndInput";
 import axios from "axios";
 import { baseURL } from "../../endpoints";
+import { connect } from "react-redux";
 
 const initialState = {
   login: "",
   password: "",
   name: "",
-  id: ""
+  id: "",
+  logged: false
 };
-export default class NavBar extends Component {
+class NavBar extends Component {
   state = {
-    ...initialState,
-    logged: false
+    ...initialState
   };
 
   constructor(props) {
@@ -37,6 +37,7 @@ export default class NavBar extends Component {
   login() {}
 
   render() {
+    const { quantity } = this.props;
     return (
       <Navbar className="bg-marsala" variant="dark" fixed="top">
         <Navbar.Brand href="/">
@@ -79,7 +80,7 @@ export default class NavBar extends Component {
                 className="badge badge-info navbar-badge"
                 style={{ top: "0px" }}
               >
-                3
+                {quantity}
               </span>
             </a>
           </li>
@@ -174,7 +175,11 @@ export default class NavBar extends Component {
             ) : (
               <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <div className="d-flex align-items-center flex-column">
-                  <a href={`/user/${this.state.id}`} className="mt-2 mb-2" data-cy="my-account">
+                  <a
+                    href={`/user/${this.state.id}`}
+                    className="mt-2 mb-2"
+                    data-cy="my-account"
+                  >
                     Minha conta
                   </a>
                   <a href="/sales" className="mt-2 mb-2">
@@ -198,3 +203,8 @@ export default class NavBar extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  quantity: state.cart.items.length
+});
+export default connect(mapStateToProps)(NavBar);

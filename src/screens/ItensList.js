@@ -7,6 +7,8 @@ import CardImage from "../components/Card/CardImage";
 import CheckBox from "../components/Checkbox/CheckBox";
 import Select from "react-select";
 import Footer from "../components/Footer/Footer";
+import axios from "axios";
+import { baseURL } from "../endpoints";
 
 const options = [
   { value: "chocolate", label: "Galápagos" },
@@ -21,7 +23,21 @@ const options2 = [
   { value: "vanilla2", label: "Especialista" }
 ];
 
-export default class Itens extends Component {
+const initialState = {
+  item: []
+};
+
+export default class Item extends Component {
+  state = { ...initialState };
+  componentDidMount() {
+    axios.get(`${baseURL}/product`).then(result => {
+      result.data.map(item => {
+        this.setState({
+          ...this.state.item.push(<CardImage name={item.name} value={item.value} image={`${baseURL}/product/${item.id}/image`} onClick={e => window.location = `/itens/${item.id}`}></CardImage>)
+        });
+      });
+    });
+  }
   render() {
     return (
       <React.Fragment>
@@ -177,24 +193,7 @@ export default class Itens extends Component {
                   </Grid>
                 </Row>
               </div>
-              <Row>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-              </Row>
-              <Row>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-              </Row>
-              <Row>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-                <CardImage></CardImage>
-              </Row>
+              <Row>{this.state.item}</Row>
               <div className="mt-3 mb-5">
                 <Row>
                   <Grid

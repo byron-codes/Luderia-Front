@@ -6,133 +6,63 @@ import { Row, Button, Card } from "react-bootstrap";
 import Grid from "../components/Layout/Grid";
 import SmallBox from "../components/Box/SmallBox";
 import swal from "sweetalert";
-import Input from "../components/Field/Input";
 import LabelAndInput from "../components/Field/LabelAndInput";
-import { faCreditCard } from "@fortawesome/free-solid-svg-icons";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { removeItem, configQuantity } from "../container/cartActions";
+import { selectCoupon } from "../container/couponActions";
+import CartRow from "../components/Card/CartRow";
+import { doubleToReal } from "../util/converters";
 
-export default class Cart extends Component {
-  state = { coupon: false };
+const initialState = {
+  coupon: "",
+  total: 0,
+  freight: 32
+};
+
+class Cart extends Component {
+  state = { ...initialState };
+
+  constructor(props) {
+    super(props);
+    this.setAttr = this.setAttr.bind(this);
+  }
+
+  setAttr(target, value) {
+    const temp = this.state;
+    temp[target] = value;
+    this.setState({
+      ...temp
+    });
+  }
+
   render() {
+    const {
+      coupon,
+      items,
+      removeItem,
+      configQuantity,
+      card,
+      address
+    } = this.props;
     return (
       <React.Fragment>
         <NavBar></NavBar>
         <Container class="mt-100">
           <Row>
             <Grid cols="9 9 9 9">
-              <Card>
-                <div className="row mt-3 mb-3">
-                  <Grid cols="7 7 7 7">
-                    <div style={{ marginLeft: "50px" }} className="d-flex">
-                      <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
-                        <img
-                          src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        ></img>
-                      </div>
-                      <div className="ml-3">
-                        <label>Ticket to ride - Europe</label>
-                        <p className="font-weight-bold">R$700,00</p>
-                      </div>
-                    </div>
-                  </Grid>
-                  <Grid cols="5 5 5 5">
-                    <div className="form-group">
-                      <label>Quantidade</label>
-                      <Row>
-                        <Grid cols="3 3 3 3">
-                          <input
-                            className="form-control"
-                            placeholder="10"
-                            type="number"
-                            defaultValue="1"
-                          ></input>
-                        </Grid>
-                        <Grid cols="3 3 3 3">
-                          <Button type="button" variant="outline-danger">
-                            <i class="fas fa-trash-alt"></i>
-                          </Button>
-                        </Grid>
-                      </Row>
-                    </div>
-                  </Grid>
-                </div>
-              </Card>
-              <Card>
-                <div className="row mt-3 mb-3">
-                  <Grid cols="7 7 7 7">
-                    <div style={{ marginLeft: "50px" }} className="d-flex">
-                      <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
-                        <img
-                          src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        ></img>
-                      </div>
-                      <div className="ml-3">
-                        <label>Ticket to ride - Europe</label>
-                        <p className="font-weight-bold">R$700,00</p>
-                      </div>
-                    </div>
-                  </Grid>
-                  <Grid cols="5 5 5 5">
-                    <div className="form-group">
-                      <label>Quantidade</label>
-                      <Row>
-                        <Grid cols="3 3 3 3">
-                          <input
-                            className="form-control"
-                            placeholder="10"
-                            type="number"
-                            defaultValue="1"
-                          ></input>
-                        </Grid>
-                        <Grid cols="3 3 3 3">
-                          <Button type="button" variant="outline-danger">
-                            <i class="fas fa-trash-alt"></i>
-                          </Button>
-                        </Grid>
-                      </Row>
-                    </div>
-                  </Grid>
-                </div>
-              </Card>
-              <Card>
-                <div className="row mt-3 mb-3">
-                  <Grid cols="7 7 7 7">
-                    <div style={{ marginLeft: "50px" }} className="d-flex">
-                      <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
-                        <img
-                          src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        ></img>
-                      </div>
-                      <div className="ml-3">
-                        <label>Ticket to ride - Europe</label>
-                        <p className="font-weight-bold">R$700,00</p>
-                      </div>
-                    </div>
-                  </Grid>
-                  <Grid cols="5 5 5 5">
-                    <div className="form-group">
-                      <label>Quantidade</label>
-                      <Row>
-                        <Grid cols="3 3 3 3">
-                          <input
-                            className="form-control"
-                            placeholder="10"
-                            type="number"
-                            defaultValue="1"
-                          ></input>
-                        </Grid>
-                        <Grid cols="3 3 3 3">
-                          <Button type="button" variant="outline-danger">
-                            <i class="fas fa-trash-alt"></i>
-                          </Button>
-                        </Grid>
-                      </Row>
-                    </div>
-                  </Grid>
-                </div>
-              </Card>
+              {items.map(item => (
+                <CartRow
+                  key={item.id}
+                  id={item.id}
+                  image={item.image}
+                  name={item.name}
+                  value={item.value}
+                  quantity={item.quantity}
+                  onRemove={removeItem}
+                  onChange={configQuantity}
+                ></CartRow>
+              ))}
             </Grid>
             <Grid cols="3 3 3 3">
               <div className="card">
@@ -140,10 +70,10 @@ export default class Cart extends Component {
                   <h4>Resumo do pedido</h4>
                   <Row>
                     <Grid cols="6 6 6 6">
-                      <label>3 produtos</label>
+                      <label>{`${items.length} produtos`}</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>R$280,00</label>
+                      <label>{doubleToReal(this.props.total)}</label>
                     </Grid>
                   </Row>
                   <Row>
@@ -151,16 +81,18 @@ export default class Cart extends Component {
                       <label>Frete</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>R$32,00</label>
+                      <label>{doubleToReal(this.state.freight)}</label>
                     </Grid>
                   </Row>
-                  {this.state.coupon ? (
+                  {coupon ? (
                     <Row>
                       <Grid cols="6 6 6 6">
-                        <label>Cupom</label>
+                        <label>{`Cupom${
+                          coupon.code ? ` - ${coupon.code}` : ``
+                        }`}</label>
                       </Grid>
                       <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                        <label>R$150,00</label>
+                        <label>{doubleToReal(coupon.value)}</label>
                       </Grid>
                     </Row>
                   ) : (
@@ -173,20 +105,37 @@ export default class Cart extends Component {
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
                       <label>
-                        {!this.state.coupon ? "R$312,00" : "R$162,00"}
+                        {doubleToReal(
+                          this.props.total -
+                            (coupon.value || 0) +
+                            this.state.freight
+                        )}
                       </label>
                     </Grid>
                   </Row>
                   <div className="dropdown-divider"></div>
                   <Row>
                     <Grid cols="6 6 6 6">
-                      <LabelAndInput label="Cupom"></LabelAndInput>
+                      <LabelAndInput
+                        name="coupon"
+                        label="Cupom"
+                        placeholder="Código"
+                        type="text"
+                        onChange={this.setAttr}
+                        value={this.state.coupon}
+                      ></LabelAndInput>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
                       <Button
                         variant="outline-success"
-                        style={{ height: "40px", width: "80px", marginTop: "30px" }}
-                        onClick={e => this.setState({ coupon: true })}
+                        style={{
+                          height: "40px",
+                          width: "80px",
+                          marginTop: "30px"
+                        }}
+                        onClick={() =>
+                          this.props.selectCoupon(this.state.coupon)
+                        }
                       >
                         Aplicar
                       </Button>
@@ -195,23 +144,33 @@ export default class Cart extends Component {
                 </div>
                 <div className="card-body p-0">
                   <SmallBox
-                    title="XXXX XXXX XXXX 1234"
-                    text="Maria das marias"
+                    title={`${
+                      card.number
+                        ? `XXXX XXXX XXXX ${card.number.substr(12)}`
+                        : `XXXX XXXX XXXX XXXX`
+                    }`}
+                    text={card.name || "Nenhum cartão selecionado"}
                     icon="far fa-credit-card"
                     iconClass="marsala-icon"
-                    actionText="Trocar cartão"
+                    actionText={`${
+                      card.number ? "Trocar cartão" : "Selecionar cartão"
+                    }`}
                     class="m-0"
                     aclass="marsala-box"
-                    href="/cart/card"
+                    href="/user/0/cards"
                   ></SmallBox>
                   <SmallBox
-                    title="Rua XXXXX, 22"
-                    text="Vila Maria"
+                    title={`${
+                      address.street
+                        ? `${address.street}, ${address.number}`
+                        : "XXXXX, XX"
+                    }`}
+                    text={address.neighborhood || "Nenhum endereço selecionado"}
                     icon="fas fa-map-marker-alt blue-icon"
                     actionText="Trocar endereço"
                     color="m-0"
                     aclass="blue-box"
-                    href="/cart/address"
+                    href="/user/0/addresses"
                   ></SmallBox>
                 </div>
                 <div className="card-footer">
@@ -239,3 +198,15 @@ export default class Cart extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  items: state.cart.items,
+  boo: state.cart.forceUpdate,
+  card: state.card,
+  address: state.address,
+  coupon: state.coupon,
+  total: state.cart.total
+});
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ removeItem, configQuantity, selectCoupon }, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);

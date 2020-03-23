@@ -83,11 +83,11 @@ export default class LineChart extends Component {
     lineChartData.datasets[2].fill = false;
     lineChartOptions.datasetFill = false;
 
-    var lineChart = new Chart(lineChartCanvas, {
-      type: "line",
-      data: lineChartData,
-      options: lineChartOptions
-    });
+    // var lineChart = new Chart(lineChartCanvas, {
+    //   type: "line",
+    //   data: lineChartData,
+    //   options: lineChartOptions
+    // });
   }
   render() {
     return (

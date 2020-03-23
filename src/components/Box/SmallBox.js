@@ -12,7 +12,7 @@ export default props => (
     {props.nohref ? (
       <div></div>
     ) : (
-      <a href={props.href} className={`small-box-footer ${props.aclass}`}>
+      <a href={props.href} onClick={props.onClick} className={`small-box-footer mouse-click ${props.aclass}`}>
         {props.actionText}
         <i className="ml-1 fas fa-arrow-circle-right"></i>
       </a>

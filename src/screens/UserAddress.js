@@ -14,6 +14,9 @@ import swal from "sweetalert";
 import { cepMask } from "../mask";
 import Select from "react-select";
 import ItemBox from "../components/Box/ItemBox";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { selectAddress } from "../container/addressActions";
 
 const initialState = {
   addresses: [],
@@ -28,7 +31,7 @@ const initialState = {
   cities: []
 };
 
-export default class UserAddress extends Component {
+class UserAddress extends Component {
   state = { ...initialState };
   constructor(props) {
     super(props);
@@ -161,7 +164,7 @@ export default class UserAddress extends Component {
           "O seu endereço foi deletado com sucesso",
           "success"
         ).then(result => {
-          window.location.reload()
+          window.location.reload();
         }),
       error => console.log(error)
     );
@@ -178,10 +181,24 @@ export default class UserAddress extends Component {
                 <div className="card-header">
                   <div className="row mb-3">
                     {this.state.addresses.map(address => {
-                      console.log(address)
                       return (
                         <Grid cols="3 3 3 3" key={address.id}>
-                          <ItemBox
+                          <SmallBox
+                            title={`${address.street}, ${address.number}`}
+                            text={address.neighborhood}
+                            subText={`${address.city.name} - ${address.state.initials}`}
+                            icon="fas fa-map-marker-alt"
+                            iconClass="blue-icon"
+                            id={address.id}
+                            aclass="blue-box"
+                            onClick={() => {
+                              this.props.selectAddress(address);
+                              window.location = "/cart";
+                            }}
+                            iconDataCy={`address-${address.id}`}
+                            actionText="Selecionar endereço"
+                          />
+                          {/* <ItemBox
                             title={`${address.street}, ${address.number}`}
                             text={address.neighborhood}
                             subText={`${address.city.name} - ${address.state.initials}`}
@@ -190,7 +207,7 @@ export default class UserAddress extends Component {
                             id={address.id}
                             onClick={this.delete}
                             iconDataCy={`address-${address.id}`}
-                          ></ItemBox>
+                          ></ItemBox> */}
                         </Grid>
                       );
                     })}
@@ -287,3 +304,7 @@ export default class UserAddress extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ selectAddress }, dispatch);
+export default connect(null, mapDispatchToProps)(UserAddress);

@@ -59,6 +59,7 @@ describe("Usuário", () => {
   it("CREATE", () => {
     nickname = generateString(10);
     cy.visit("/register");
+    cy.wait(3000);
     cy.get("[data-cy=btn-save]").click();
     cy.wait(5000);
     cy.get("[data-cy=name]").type("Nome do usuário");
@@ -121,8 +122,6 @@ describe("Usuário", () => {
     cy.wait(3000);
     cy.get(".swal-button").click();
     cy.wait(3000);
-    cy.reload()
-    cy.wait(3000);
   });
   it("CREATE ADDRESS", () => {
     cy.visit(`/user/${userId}/addresses`);
@@ -141,8 +140,6 @@ describe("Usuário", () => {
     cy.get(`[data-cy=address-${addressId}]`).click();
     cy.wait(3000);
     cy.get(".swal-button").click();
-    cy.wait(3000);
-    cy.reload()
     cy.wait(3000);
   });
   it("DELETE", () => {

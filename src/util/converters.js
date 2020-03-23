@@ -1,5 +1,5 @@
-export function doubleToReal(value) {
-    return "R$" + value.toString().replace(".", ",");
+export function doubleToReal(value = 0) {
+  return "R$" + value.toFixed(2).toString().replace(".", ",");
 }
 
 export function convertDate(date, br) {
