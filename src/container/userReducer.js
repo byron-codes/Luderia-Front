@@ -1,10 +1,10 @@
-const INITIAL_STATE = {};
+const INITIAL_STATE = { logged: false };
 
 export default function(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case "COUPON_SELECT":
-      return { ...action.payload.data };
-    case "COUPON_CLEAN":
+    case "USER_LOGIN":
+      return { ...action.payload.data, logged: true };
+    case "USER_LOGOUT":
       return INITIAL_STATE;
     default:
       return state;

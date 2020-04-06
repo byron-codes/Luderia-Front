@@ -8,3 +8,9 @@ export const selectCoupon = coupon => {
     payload: payload
   };
 };
+
+export const cleanCoupon = () => {
+  return {
+    type: "COUPON_CLEAN"
+  };
+};

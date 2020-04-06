@@ -8,32 +8,145 @@ import Select from "react-select";
 import LabelAndInput from "../components/Field/LabelAndInput";
 import Table from "../components/Table/Table";
 import swal from "sweetalert";
-
-const products = [
-  { value: "chocolate", label: "Bloodborne" },
-  { value: "vanilla", label: "Ticket to ride - Europe" }
-];
+import axios from "axios";
+import { baseURL } from "../endpoints";
 
 const reason = [
-  { value: "chocolate", label: "Produto danificado" },
-  { value: "vanilla", label: "Produto incorreto" },
-  { value: "vanilla2", label: "Produto incompleto" },
-  { value: "strawberry", label: "Desistência" }
+  { value: "DAMAGED", label: "Produto danificado" },
+  { value: "INCORRECT", label: "Produto incorreto" },
+  { value: "INCOMPLETE", label: "Produto incompleto" },
+  { value: "WAIVER", label: "Desistência" },
 ];
 
+const initialState = {
+  freight: 0,
+  total: 0,
+  items: [],
+  creditCard: {},
+  address: {},
+  coupon: {},
+  itemsSelect: [],
+  maxItem: 1,
+  toTable: {
+    quantity: 1,
+    item: "",
+    itemId: 0,
+    reason: "",
+    reasonLabel: "",
+    description: "",
+  },
+  rows: [],
+  selectedItemValue: "",
+  selectedReasonValue: "",
+};
+
 export default class SaleChange extends Component {
-  state = {
-    rows: [
-      <tr className="table-light mouse-click">
-        <td scope="row" className="font-weight-bold">
-          Zombicide
-        </td>
-        <td>3 Itens</td>
-        <td>Produto incompleto</td>
-        <td>O produto veio faltando miniaturas</td>
+  state = { ...initialState };
+  constructor(props) {
+    super(props);
+    this.getItems = this.getItems.bind(this);
+    this.setListItems = this.setListItems.bind(this);
+    this.setSelectedProduct = this.setSelectedProduct.bind(this);
+    this.setAttr = this.setAttr.bind(this);
+    this.addRow = this.addRow.bind(this);
+    this.indexById = this.indexById.bind(this);
+    this.getItems();
+  }
+
+  getItems() {
+    axios
+      .get(`${baseURL}/sale/${this.props.match.params.id}`)
+      .then((result) => {
+        this.setState({
+          ...this.state,
+          ...result.data,
+        });
+        this.setListItems();
+      });
+  }
+
+  setListItems() {
+    let itemsSelect = [];
+    this.state.items.map((itemSale) => {
+      itemsSelect.push({
+        value: itemSale.product.id,
+        label: itemSale.product.name,
+        quantity: itemSale.quantity,
+      });
+    });
+    this.setState({ ...this.state, itemsSelect });
+  }
+
+  setSelectedProduct(item) {
+    const toTable = this.state.toTable;
+    toTable.item = item.label;
+    toTable.itemId = item.value;
+    toTable.quantity = 1;
+    this.setState({
+      ...this.state,
+      selectedItemValue: item,
+      toTable,
+      maxItem: item.quantity,
+    });
+  }
+
+  setSelectedReason(item) {
+    let toTable = this.state.toTable;
+    toTable.reason = item.value;
+    toTable.reasonLabel = item.label;
+    this.setState({ toTable, selectedReasonValue: item });
+  }
+
+  setAttr(target, value) {
+    const temp = this.state;
+    temp.toTable[target] = value;
+    this.setState({
+      ...temp,
+    });
+  }
+
+  addRow() {
+    let rows = this.state.rows;
+    rows.push(
+      <tr>
+        <td>{this.state.toTable.item}</td>
+        <td>{this.state.toTable.quantity} Itens</td>
+        <td>{this.state.toTable.reasonLabel}</td>
+        <td>{this.state.toTable.description}</td>
       </tr>
-    ]
-  };
+    );
+    let itemsSelect = this.state.itemsSelect;
+    // if (itemsSelect[this.indexById(this.state.toTable.itemId)].quantity === 1) {
+    //   itemsSelect.splice(this.indexById(this.state.toTable.itemId), 1);
+    //   this.setState({
+    //     ...this.state,
+    //     selectedItemValue: {},
+    //   });
+    // } else {
+    itemsSelect[this.indexById(this.state.toTable.itemId)].quantity =
+      itemsSelect[this.indexById(this.state.toTable.itemId)].quantity - 1;
+    // }
+    //console.log()
+    this.setState({
+      ...this.state,
+      rows,
+      itemsSelect,
+      toTable: initialState.toTable,
+      selectedItemValue: "",
+      selectedReasonValue: "",
+    });
+    console.log(this.state)
+  }
+
+  indexById(id) {
+    for (var i = 0; i < this.state.itemsSelect.length; i++) {
+      if (this.state.itemsSelect[i].value === id) {
+        return i;
+      }
+    }
+    return undefined;
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -45,9 +158,11 @@ export default class SaleChange extends Component {
                 <div>
                   <label>Produto</label>
                   <Select
-                    options={products}
+                    options={this.state.itemsSelect}
                     isSearchable
                     placeholder="Selecione..."
+                    onChange={(e) => this.setSelectedProduct(e)}
+                    value={this.state.selectedItemValue}
                   />
                 </div>
               </Grid>
@@ -56,7 +171,12 @@ export default class SaleChange extends Component {
                   <LabelAndInput
                     label="Quantidade"
                     type="number"
-                    value="1"
+                    max={this.state.maxItem}
+                    min="1"
+                    maxLength={this.state.maxItem}
+                    onChange={this.setAttr}
+                    value={this.state.toTable.quantity}
+                    name="quantity"
                   ></LabelAndInput>
                 </div>
               </Grid>
@@ -67,19 +187,26 @@ export default class SaleChange extends Component {
                     options={reason}
                     isSearchable
                     placeholder="Selecione..."
+                    onChange={(e) => this.setSelectedReason(e)}
+                    value={this.state.selectedReasonValue}
                   />
                 </div>
               </Grid>
               <Grid cols="3 3 3 3">
                 <div>
-                  <LabelAndInput label="Descrição do problema"></LabelAndInput>
+                  <LabelAndInput
+                    label="Descrição do problema"
+                    onChange={this.setAttr}
+                    value={this.state.toTable.description}
+                    name="description"
+                  ></LabelAndInput>
                 </div>
               </Grid>
               <Grid
                 cols="1 1 1 1"
                 class="d-flex justify-content-center btn-change-sale"
               >
-                <Button variant="outline-success">
+                <Button variant="outline-success" onClick={() => this.addRow()}>
                   <i className="fa fa-plus"></i>
                 </Button>
               </Grid>
@@ -87,22 +214,43 @@ export default class SaleChange extends Component {
             <div className="dropdown-divider"></div>
             <Row>
               <Grid cols="12 12 12 12" class="pl-3 pr-3">
-                <Table
+                {/* <Table
                   head={["Nome", "Quantidade", "Motivo", "Descrição"]}
+                  rows={[
+                    <tr className="table-light mouse-click">
+                      <td scope="row" className="font-weight-bold">
+                        Zombicide
+                      </td>
+                      <td>3 Itens</td>
+                      <td>Produto incompleto</td>
+                      <td>O produto veio faltando miniaturas</td>
+                    </tr>
+                  ]}
+                ></Table> */}
+                <Table
+                  id="tableChange"
+                  name="Lista de compras"
+                  head={[
+                    "Nome do produto",
+                    "Quantidade de itens",
+                    "Motivo",
+                    "Descrição",
+                  ]}
                   rows={this.state.rows}
+                  noUpdate
                 ></Table>
               </Grid>
             </Row>
             <Card.Footer className="d-flex justify-content-end">
               <Button
                 variant="outline-warning"
-                onClick={e =>
+                onClick={(e) =>
                   swal(
                     "Muito obrigado",
                     "Sua solicitação de troca será análisada em até 5 dias utéis",
                     "success"
-                  ).then(value => {
-                    window.location = "/sales"
+                  ).then((value) => {
+                    window.location = "/sales";
                   })
                 }
               >
@@ -111,7 +259,7 @@ export default class SaleChange extends Component {
             </Card.Footer>
           </Card>
         </Container>
-        <Footer fix></Footer>
+        <Footer></Footer>
       </React.Fragment>
     );
   }

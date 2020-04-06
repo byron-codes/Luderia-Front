@@ -17,6 +17,7 @@ import ItemBox from "../components/Box/ItemBox";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { selectAddress } from "../container/addressActions";
+import { setFreight } from "../container/cartActions";
 
 const initialState = {
   addresses: [],
@@ -193,6 +194,9 @@ class UserAddress extends Component {
                             aclass="blue-box"
                             onClick={() => {
                               this.props.selectAddress(address);
+                              this.props.setFreight(
+                                address.cep.replace("-", "")
+                              );
                               window.location = "/cart";
                             }}
                             iconDataCy={`address-${address.id}`}
@@ -306,5 +310,5 @@ class UserAddress extends Component {
 }
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ selectAddress }, dispatch);
+  bindActionCreators({ selectAddress, setFreight }, dispatch);
 export default connect(null, mapDispatchToProps)(UserAddress);

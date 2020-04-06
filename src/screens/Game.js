@@ -86,8 +86,8 @@ const style = [
 
 const styleValues = {
   CARD: style[0],
-  TABLE: style[0],
-  RPG: style[0]
+  TABLE: style[1],
+  RPG: style[2]
 };
 
 const level = [

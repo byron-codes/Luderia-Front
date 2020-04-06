@@ -19,6 +19,8 @@ export default props => (
         readOnly={props.readOnly}
         type={props.type}
         maxLength={props.maxlength || ""}
+        min={props.min || ""}
+        max={props.max || ""}
       ></input>
       {props.errors ? (
         props.errors.map(erro => (

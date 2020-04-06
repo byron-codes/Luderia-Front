@@ -12,6 +12,8 @@ import Input from "../components/Field/Input";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { addItem } from "../container/cartActions";
+import swal from "sweetalert";
+import LabelAndInput from "../components/Field/LabelAndInput";
 
 const initialState = {
   id: 0,
@@ -19,42 +21,75 @@ const initialState = {
   description: "",
   image: "",
   value: "",
-  cep: ""
+  quantityStock: 0,
+  cep: "",
+  quantity: 1,
+  shipment: {
+    freight: 0,
+    days: 0,
+  },
 };
 class Item extends Component {
   state = { ...initialState };
 
   constructor(props) {
     super(props);
-    this.calcFrete = this.calcFrete.bind(this);
+    this.calcFreight = this.calcFreight.bind(this);
+    this.addItemToCart = this.addItemToCart.bind(this);
+    this.setAttr = this.setAttr.bind(this);
   }
 
   componentDidMount() {
     axios
       .get(`${baseURL}/product/${this.props.match.params.id}`)
-      .then(result =>
+      .then((result) => {
+        console.log(result.data);
         this.setState({
           ...result.data,
-          image: `${baseURL}/product/${result.data.id}/image`
-        })
-      );
+          image: `${baseURL}/product/${result.data.id}/image`,
+        });
+      });
   }
 
-  calcFrete(target, value) {
-    if (value.length === 9) {
+  calcFreight() {
+    if (this.state.cep.length === 9) {
       axios
-        .get(
-          `http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx?nCdEmpresa=&sDsSenha=&sCepOrigem=01451001&sCepDestino=${value.replace(
-            "-",
-            ""
-          )}&nVlPeso=1&nCdFormato=1&nVlComprimento=20&nVlAltura=20&nVlLargura=20&sCdMaoPropria=n&nVlValorDeclarado=0&sCdAvisoRecebimento=n&nCdServico=04510&nVlDiametro=0&StrRetorno=xml&nIndicaCalculo=3`
-        )
-        .then(result => console.log(result));
+        .get(`${baseURL}/freight/${this.state.cep.replace("-", "")}`)
+        .then((result) => {
+          console.log(result.data);
+          this.setState({
+            ...this.state,
+            shipment: {
+              freight: doubleToReal(result.data.freight),
+              days: result.data.days,
+            },
+          });
+        });
     }
-    const temp = [];
+  }
+
+  addItemToCart() {
+    if (this.state.quantity > this.state.quantityStock) {
+      swal(
+        "Muitos itens",
+        "Infelizmente não temos essa quantidade de itens no estoque",
+        "error"
+      );
+    } else {
+      swal(
+        "Produto adicionado",
+        "Produto adicionado no carrinho com sucesso",
+        "success"
+      );
+      this.props.addItem(this.state, this.state.quantity);
+    }
+  }
+
+  setAttr(target, value) {
+    const temp = this.state;
     temp[target] = value;
     this.setState({
-      ...temp
+      ...temp,
     });
   }
 
@@ -72,7 +107,7 @@ class Item extends Component {
                     maxWidth: "325px",
                     maxHeight: "325px",
                     minWidth: "325px",
-                    minHeight: "325px"
+                    minHeight: "325px",
                   }}
                 ></img>
               </div>
@@ -94,22 +129,72 @@ class Item extends Component {
                   </Row>
                 </div>
                 <div className="card-header">
-                  <div className="form-group">
+                  <div className="form-group mb-0">
                     <label>Frete e prazo</label>
                     <Row>
                       <Input
                         name="cep"
                         cols="9 9 9 9"
                         placeholder="00000-000"
-                        onChange={this.calcFrete}
+                        onChange={this.setAttr}
                         value={this.state.cep}
                         mask={cepMask}
                       ></Input>
                       <Grid cols="3 3 3 3">
-                        <Button type="button" variant="outline-primary">
+                        <Button
+                          type="button"
+                          variant="outline-primary"
+                          onClick={this.calcFreight}
+                          disabled={this.state.cep.length != 9 ? true : false}
+                        >
                           OK
                         </Button>
                       </Grid>
+                    </Row>
+                    {this.state.shipment.freight === 0 ? (
+                      <div></div>
+                    ) : (
+                      <div>
+                        <Row>
+                          <Grid cols="8 8 8 8">
+                            <label>Valor do frete</label>
+                          </Grid>
+                          <Grid cols="4 4 4 4">
+                            <label>{this.state.shipment.freight}</label>
+                          </Grid>
+                        </Row>
+                        <Row>
+                          <Grid cols="8 8 8 8">
+                            <label>Tempo de entrega</label>
+                          </Grid>
+                          <Grid cols="4 4 4 4">
+                            <label>{this.state.shipment.days} dias úteis</label>
+                          </Grid>
+                        </Row>
+                        <div className="dropdown-divider"></div>
+                      </div>
+                    )}
+                    <Row>
+                      <Grid cols="8 8 8 8">
+                        <label>Quantidade em estoque</label>
+                      </Grid>
+                      <Grid cols="4 4 4 4">
+                        <label>{this.state.quantityStock}</label>
+                      </Grid>
+                    </Row>
+                    <Row className="mt-3 mb-0">
+                      <Grid cols="8 8 8 8">
+                        <label>Quantidade</label>
+                      </Grid>
+                      <Input
+                        cols="4 4 4 4"
+                        name="quantity"
+                        value={this.state.quantity}
+                        onChange={this.setAttr}
+                        type="number"
+                        max={this.state.quantityStock}
+                        min="1"
+                      ></Input>
                     </Row>
                   </div>
                 </div>
@@ -122,7 +207,15 @@ class Item extends Component {
                       <Button
                         type="button"
                         variant="outline-primary"
-                        onClick={() => this.props.addItem(this.state)}
+                        onClick={() =>
+                          this.state.quantityStock > 0
+                            ? this.addItemToCart()
+                            : swal(
+                                "Sem estoque",
+                                "Não temos o seu produto em estoque, mas assim que ele voltar te contamos, ok?",
+                                "error"
+                              )
+                        }
                       >
                         Adicionar ao carrinho
                       </Button>
@@ -139,10 +232,10 @@ class Item extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   items: state.cart.items,
-  coupon: state.cart.coupon
+  coupon: state.cart.coupon,
 });
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators({ addItem }, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(Item);

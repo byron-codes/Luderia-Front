@@ -90,3 +90,7 @@ td:hover {
 .w-100-p {
   width: 100% !important;
 }
+
+.correct-card {
+  margin-top: -15px;
+}

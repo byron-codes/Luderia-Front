@@ -1,12 +1,14 @@
 const INITIAL_STATE = {
   cart: {
     items: [],
+    total: 0,
     forceUpdate: false,
-    total: 0
+    sendValue: 32
   },
-  card: {},
+  creditCard: {},
   address: {},
-  coupon: {}
+  coupon: {},
+  user: { logged: false }
 };
 
 export const loadState = () => {

@@ -6,6 +6,8 @@ import Container from "../Layout/Container";
 import axios from "axios";
 import { baseURL } from "../../endpoints";
 import { connect } from "react-redux";
+import { login, logout } from "../../container/userActions";
+import { bindActionCreators } from "redux";
 
 const initialState = {
   login: "",
@@ -37,7 +39,7 @@ class NavBar extends Component {
   login() {}
 
   render() {
-    const { quantity } = this.props;
+    const { quantity, login, user, logout } = this.props;
     return (
       <Navbar className="bg-marsala" variant="dark" fixed="top">
         <Navbar.Brand href="/">
@@ -95,18 +97,18 @@ class NavBar extends Component {
                 className="fas fa-user-circle"
                 style={{ fontSize: "24px" }}
               ></i>
-              {this.state.logged ? (
+              {user.logged ? (
                 <label
                   style={{ margin: "0px", marginLeft: "10px" }}
                   className="mouse-click"
                 >
-                  {this.state.name}
+                  {user.name}
                 </label>
               ) : (
                 <div></div>
               )}
             </a>
-            {!this.state.logged ? (
+            {!user.logged ? (
               <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <div className="d-flex align-items-center flex-column">
                   <div className="mt-2">
@@ -143,23 +145,7 @@ class NavBar extends Component {
                     type="button"
                     className="btn btn-outline-dark mt-2 mb-2"
                     style={{ width: "125px" }}
-                    onClick={e =>
-                      axios
-                        .get(
-                          `${baseURL}/user/login?login=${this.state.login}&password=${this.state.password}`
-                        )
-                        .then(
-                          result => {
-                            this.setState({
-                              ...this.state,
-                              name: result.data.name,
-                              logged: true,
-                              id: result.data.id
-                            });
-                          },
-                          error => alert(error)
-                        )
-                    }
+                    onClick={e => login(this.state.login, this.state.password)}
                   >
                     Entrar
                   </button>
@@ -176,7 +162,7 @@ class NavBar extends Component {
               <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <div className="d-flex align-items-center flex-column">
                   <a
-                    href={`/user/${this.state.id}`}
+                    href={`/user/${user.id}`}
                     className="mt-2 mb-2"
                     data-cy="my-account"
                   >
@@ -186,12 +172,12 @@ class NavBar extends Component {
                     Meus pedidos
                   </a>
                   <a
-                    href={`/user/${this.state.id}/coupon`}
+                    href={`/user/${user.id}/coupon`}
                     className="mt-2 mb-2"
                   >
                     Meus cupons
                   </a>
-                  <a href="/" className="mt-2 mb-2">
+                  <a href="/" onClick={() => logout()} className="mt-2 mb-2">
                     Sair
                   </a>
                 </div>
@@ -205,6 +191,8 @@ class NavBar extends Component {
 }
 
 const mapStateToProps = state => ({
-  quantity: state.cart.items.length
+  quantity: state.cart.items.length,
+  user: state.user
 });
-export default connect(mapStateToProps)(NavBar);
+const mapDispatchToProps = dispatch => bindActionCreators({ login, logout }, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

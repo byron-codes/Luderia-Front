@@ -3,12 +3,14 @@ import CartReducer from "./container/cartReducer";
 import CardReducer from "./container/cardReducer";
 import AddressReducer from './container/addressReducer'
 import CouponReducer from './container/couponReducer'
+import UserReducer from "./container/userReducer";
 
 const rootReducer = combineReducers({
   cart: CartReducer,
-  card: CardReducer,
+  creditCard: CardReducer,
   address: AddressReducer,
-  coupon: CouponReducer
+  coupon: CouponReducer,
+  user: UserReducer
 });
 
 export default rootReducer;

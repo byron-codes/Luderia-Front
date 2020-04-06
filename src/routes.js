@@ -44,8 +44,8 @@ export default props => (
       <Route path="/register" component={Login} exact></Route>
       <Route path="/user/:id/coupon" component={CouponClient} exact></Route>
       <Route path="/sales" component={SalesClient} exact></Route>
-      <Route path="/sale/change" component={SaleChange} exact></Route>
-      <Route path="/sale" component={Sale} exact></Route>
+      <Route path="/sale/change/:id" component={SaleChange} exact></Route>
+      <Route path="/sale/:id" component={Sale} exact></Route>
       <Route path="/user/:id" component={Profile} exact></Route>
       <Route path="/admin" component={Dashboard} exact></Route>
       <Route path="/admin/coupon" component={Coupon} exact></Route>

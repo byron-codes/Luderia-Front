@@ -9,15 +9,21 @@ import swal from "sweetalert";
 import LabelAndInput from "../components/Field/LabelAndInput";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { removeItem, configQuantity } from "../container/cartActions";
-import { selectCoupon } from "../container/couponActions";
+import {
+  removeItem,
+  configQuantity,
+  cleanCart
+} from "../container/cartActions";
+import { selectCoupon, cleanCoupon } from "../container/couponActions";
 import CartRow from "../components/Card/CartRow";
 import { doubleToReal } from "../util/converters";
+import axios from "axios";
+import { baseURL } from "../endpoints";
 
 const initialState = {
   coupon: "",
   total: 0,
-  freight: 32
+  shipment: { freight: 0, days: 0 }
 };
 
 class Cart extends Component {
@@ -26,6 +32,12 @@ class Cart extends Component {
   constructor(props) {
     super(props);
     this.setAttr = this.setAttr.bind(this);
+    this.save = this.save.bind(this);
+    this.getFreight = this.getFreight.bind(this);
+  }
+
+  componentDidMount() {
+    this.getFreight();
   }
 
   setAttr(target, value) {
@@ -36,15 +48,38 @@ class Cart extends Component {
     });
   }
 
+  save() {
+    axios.post(`${baseURL}/sale`, this.props).then(result => {
+      this.props.cleanCart();
+      this.props.cleanCoupon();
+      swal(
+        "Muito obrigado",
+        "Sua compra foi efetuada com succeso, seus itens estão em separação",
+        "success"
+      ).then(value => {
+        window.location = "/";
+      });
+    });
+  }
+
+  getFreight() {
+    axios
+      .get(`${baseURL}/freight/${this.props.address.cep.replace("-", "")}`)
+      .then(result => {
+        this.setState({ ...this.state, shipment: { ...result.data } });
+      });
+  }
+
   render() {
     const {
       coupon,
       items,
       removeItem,
       configQuantity,
-      card,
+      creditCard,
       address
     } = this.props;
+    const { shipment } = this.state;
     return (
       <React.Fragment>
         <NavBar></NavBar>
@@ -76,14 +111,6 @@ class Cart extends Component {
                       <label>{doubleToReal(this.props.total)}</label>
                     </Grid>
                   </Row>
-                  <Row>
-                    <Grid cols="6 6 6 6">
-                      <label>Frete</label>
-                    </Grid>
-                    <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>{doubleToReal(this.state.freight)}</label>
-                    </Grid>
-                  </Row>
                   {coupon ? (
                     <Row>
                       <Grid cols="6 6 6 6">
@@ -98,6 +125,22 @@ class Cart extends Component {
                   ) : (
                     <div></div>
                   )}
+                  <Row>
+                    <Grid cols="6 6 6 6">
+                      <label>Frete</label>
+                    </Grid>
+                    <Grid cols="6 6 6 6" class="d-flex justify-content-end">
+                      <label>{doubleToReal(shipment.freight || 0)}</label>
+                    </Grid>
+                  </Row>
+                  <Row>
+                    <Grid cols="6 6 6 6">
+                      <label>Tempo de entrega</label>
+                    </Grid>
+                    <Grid cols="6 6 6 6" class="d-flex justify-content-end">
+                      <label>{shipment.days} dias úteis</label>
+                    </Grid>
+                  </Row>
                   <div className="dropdown-divider"></div>
                   <Row>
                     <Grid cols="6 6 6 6">
@@ -108,7 +151,7 @@ class Cart extends Component {
                         {doubleToReal(
                           this.props.total -
                             (coupon.value || 0) +
-                            this.state.freight
+                            shipment.freight
                         )}
                       </label>
                     </Grid>
@@ -145,15 +188,15 @@ class Cart extends Component {
                 <div className="card-body p-0">
                   <SmallBox
                     title={`${
-                      card.number
-                        ? `XXXX XXXX XXXX ${card.number.substr(12)}`
+                      creditCard.number
+                        ? `XXXX XXXX XXXX ${creditCard.number.substr(12)}`
                         : `XXXX XXXX XXXX XXXX`
                     }`}
-                    text={card.name || "Nenhum cartão selecionado"}
+                    text={creditCard.name || "Nenhum cartão selecionado"}
                     icon="far fa-credit-card"
                     iconClass="marsala-icon"
                     actionText={`${
-                      card.number ? "Trocar cartão" : "Selecionar cartão"
+                      creditCard.number ? "Trocar cartão" : "Selecionar cartão"
                     }`}
                     class="m-0"
                     aclass="marsala-box"
@@ -174,18 +217,7 @@ class Cart extends Component {
                   ></SmallBox>
                 </div>
                 <div className="card-footer">
-                  <Button
-                    variant="outline-success"
-                    onClick={e =>
-                      swal(
-                        "Muito obrigado",
-                        "Sua compra foi efetuada com succeso",
-                        "success"
-                      ).then(value => {
-                        window.location = "/";
-                      })
-                    }
-                  >
+                  <Button variant="outline-success" onClick={() => this.save()}>
                     Finalizar compra
                   </Button>
                 </div>
@@ -202,11 +234,15 @@ class Cart extends Component {
 const mapStateToProps = state => ({
   items: state.cart.items,
   boo: state.cart.forceUpdate,
-  card: state.card,
+  creditCard: state.creditCard,
   address: state.address,
   coupon: state.coupon,
-  total: state.cart.total
+  total: state.cart.total,
+  user: state.user
 });
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ removeItem, configQuantity, selectCoupon }, dispatch);
+  bindActionCreators(
+    { removeItem, configQuantity, selectCoupon, cleanCart, cleanCoupon },
+    dispatch
+  );
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);

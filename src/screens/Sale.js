@@ -2,11 +2,45 @@ import React, { Component } from "react";
 import NavBar from "../components/NavBar/NavBar";
 import Footer from "../components/Footer/Footer";
 import Container from "../components/Layout/Container";
-import { Row, Button, Card } from "react-bootstrap";
+import { Row, Button } from "react-bootstrap";
 import Grid from "../components/Layout/Grid";
 import SmallBox from "../components/Box/SmallBox";
+import CardExchange from "../components/Card/CardExchange";
+import axios from "axios";
+import { baseURL } from "../endpoints";
+import { doubleToReal, convertDate } from "../util/converters";
+
+const initialState = {
+  freight: 0,
+  total: 0,
+  items: [],
+  creditCard: {},
+  address: {},
+  coupon: {},
+  saleStatus: "",
+  canChange: false,
+};
 
 export default class Cart extends Component {
+  state = { ...initialState };
+
+  constructor(props) {
+    super(props);
+    this.getItems = this.getItems.bind(this);
+    this.getItems();
+  }
+
+  getItems() {
+    axios
+      .get(`${baseURL}/sale/${this.props.match.params.id}`)
+      .then((result) => {
+        console.log(result.data);
+        this.setState({
+          ...result.data,
+        });
+      });
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -15,63 +49,15 @@ export default class Cart extends Component {
           <Row>
             <Grid cols="9 9 9 9">
               <Row>
-                <Grid cols="4 4 4 4">
-                  <Card>
-                    <div
-                      className="mt-3 mb-3 d-flex"
-                      style={{ marginLeft: "20px" }}
-                    >
-                      <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
-                        <img
-                          src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        ></img>
-                      </div>
-                      <div className="ml-3">
-                        <label>Ticket to ride - Europe</label>
-                        <p className="font-weight-bold">R$700,00</p>
-                      </div>
-                    </div>
-                  </Card>
-                </Grid>
-                <Grid cols="4 4 4 4">
-                  <Card>
-                    <div
-                      className="mt-3 mb-3 d-flex"
-                      style={{ marginLeft: "20px" }}
-                    >
-                      <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
-                        <img
-                          src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        ></img>
-                      </div>
-                      <div className="ml-3">
-                        <label>Ticket to ride - Europe</label>
-                        <p className="font-weight-bold">R$700,00</p>
-                      </div>
-                    </div>
-                  </Card>
-                </Grid>
-                <Grid cols="4 4 4 4">
-                  <Card>
-                    <div
-                      className="mt-3 mb-3 d-flex"
-                      style={{ marginLeft: "20px" }}
-                    >
-                      <div style={{ maxHeight: "100px", maxWidth: "100px" }}>
-                        <img
-                          src="https://storage.googleapis.com/ludopedia-capas/133_m.jpg"
-                          style={{ maxHeight: "100%", maxWidth: "100%" }}
-                        ></img>
-                      </div>
-                      <div className="ml-3">
-                        <label>Ticket to ride - Europe</label>
-                        <p className="font-weight-bold">R$700,00</p>
-                      </div>
-                    </div>
-                  </Card>
-                </Grid>
+                {this.state.items.map((item) => (
+                  <Grid cols="4 4 4 4">
+                    <CardExchange
+                      image={`${baseURL}/product/${item.product.id}/image`}
+                      name={item.product.name}
+                      value={doubleToReal(item.product.value)}
+                    ></CardExchange>
+                  </Grid>
+                ))}
               </Row>
             </Grid>
             <Grid cols="3 3 3 3">
@@ -80,10 +66,27 @@ export default class Cart extends Component {
                   <h4>Resumo do pedido</h4>
                   <Row>
                     <Grid cols="6 6 6 6">
-                      <label>3 produtos</label>
+                      <label>Data da compra</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>R$280,00</label>
+                      <label>{convertDate(this.state.date, true)}</label>
+                    </Grid>
+                  </Row>
+                  <Row>
+                    <Grid cols="6 6 6 6">
+                      <label>
+                        {this.state.items.length}{" "}
+                        {this.state.items.length === 1 ? "Produto" : "Produtos"}
+                      </label>
+                    </Grid>
+                    <Grid cols="6 6 6 6" class="d-flex justify-content-end">
+                      <label>
+                        {doubleToReal(
+                          this.state.total -
+                            this.state.freight +
+                            (this.state.coupon ? this.state.coupon.value : 0)
+                        )}
+                      </label>
                     </Grid>
                   </Row>
                   <Row>
@@ -91,43 +94,69 @@ export default class Cart extends Component {
                       <label>Frete</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>R$32,00</label>
+                      <label>{doubleToReal(this.state.freight)}</label>
                     </Grid>
                   </Row>
+                  {this.state.coupon ? (
+                    <Row>
+                      <Grid cols="6 6 6 6">
+                        <label>Cupom - {this.state.coupon.code}</label>
+                      </Grid>
+                      <Grid cols="6 6 6 6" class="d-flex justify-content-end">
+                        <label>{doubleToReal(this.state.coupon.value)}</label>
+                      </Grid>
+                    </Row>
+                  ) : (
+                    <div></div>
+                  )}
                   <div className="dropdown-divider"></div>
                   <Row>
                     <Grid cols="6 6 6 6">
                       <label>Total</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>R$312,00</label>
+                      <label>{doubleToReal(this.state.total)}</label>
                     </Grid>
                   </Row>
                 </div>
                 <div className="card-body p-0">
                   <SmallBox
-                    title="XXXX XXXX XXXX 1234"
-                    text="Maria das marias"
+                    title={`XXXX XXXX XXXX ${
+                      this.state.creditCard.number
+                        ? this.state.creditCard.number.substr(12)
+                        : "XXXX"
+                    }`}
+                    text={this.state.creditCard.name}
                     icon="far fa-credit-card marsala-icon"
                     nohref
+                    class="m-0"
                     color="m-0 card-sale"
                     aclass="marsala-box"
                     href="/cart/card"
                   ></SmallBox>
-                  <div className="dropdown-divider"></div>
                   <SmallBox
-                    title="Rua XXXXX, 22"
-                    text="Vila Maria"
+                    title={`${this.state.address.street}, ${this.state.address.number}`}
+                    text={this.state.address.neighborhood}
                     icon="fas fa-map-marker-alt blue-icon"
                     nohref
                     color="m-0 card-sale"
                     aclass="blue-box"
                     href="/cart/address"
+                    class="correct-card"
                   ></SmallBox>
                 </div>
-                <div className="card-footer">
-                  <Button variant="outline-warning" href="/sale/change">Solicitar troca</Button>
-                </div>
+                {this.state.canChange ? (
+                  <div className="card-footer correct-card">
+                    <Button
+                      variant="outline-warning"
+                      href={`/sale/change/${this.state.id}`}
+                    >
+                      Solicitar troca
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="correct-card"></div>
+                )}
               </div>
             </Grid>
           </Row>
