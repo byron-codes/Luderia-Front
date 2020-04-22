@@ -10,6 +10,7 @@ import swal from "sweetalert";
 import { baseURL } from "../endpoints";
 import axios from "axios";
 import { cpfMask } from "../mask";
+import { doubleToReal } from "../util/converters";
 
 const initialState = {
   items: {
@@ -20,7 +21,8 @@ const initialState = {
     cpf: "",
     confirmPassword: "",
     oldPassword: "",
-    newPassword: ""
+    newPassword: "",
+    balance: 0
   },
   errors: {
     name: [],
@@ -28,8 +30,8 @@ const initialState = {
     cpf: [],
     confirmPassword: [],
     oldPassword: [],
-    newPassword: []
-  }
+    newPassword: [],
+  },
 };
 
 export default class Cart extends Component {
@@ -47,7 +49,7 @@ export default class Cart extends Component {
     const temp = this.state;
     temp.items[target] = value;
     this.setState({
-      ...temp
+      ...temp,
     });
   }
 
@@ -58,20 +60,21 @@ export default class Cart extends Component {
     axios
       .put(`${baseURL}/user/${this.props.match.params.id}`, this.state.items)
       .then(
-        result =>
+        (result) =>
           swal(
             "Sucesso",
             "O seu cadastro foi atualizado com sucesso",
             "success"
           ).then(
-            result => (window.location = `/user/${this.props.match.params.id}`)
+            (result) =>
+              (window.location = `/user/${this.props.match.params.id}`)
           ),
-        error => {
+        (error) => {
           console.log(error.response.data);
-          error.response.data.errors.map(error => {
+          error.response.data.errors.map((error) => {
             this.state.errors[error.field].push(error.defaultMessage);
             this.setState({
-              ...this.state
+              ...this.state,
             });
           });
         }
@@ -87,25 +90,25 @@ export default class Cart extends Component {
       oldPassword: this.state.items.oldPassword,
       newPassword: this.state.items.newPassword,
       confirmPassword: this.state.items.confirmPassword,
-      id: this.props.match.params.id
+      id: this.props.match.params.id,
     };
     axios
       .put(`${baseURL}/user/password/${this.props.match.params.id}`, items)
       .then(
-        result =>
+        (result) =>
           swal(
             "Sucesso",
             "Sua senha foi atualizada com succeso",
             "success"
           ).then(
-            result =>
+            (result) =>
               (window.location = `/profile/${this.props.match.params.id}`)
           ),
-        error => {
-          error.response.data.errors.map(error => {
+        (error) => {
+          error.response.data.errors.map((error) => {
             this.state.errors[error.field].push(error.defaultMessage);
             this.setState({
-              ...this.state
+              ...this.state,
             });
           });
         }
@@ -114,12 +117,13 @@ export default class Cart extends Component {
 
   get() {
     axios.get(`${baseURL}/user/${this.props.match.params.id}`).then(
-      result => {
+      (result) => {
+        debugger
         this.setState({ items: result.data });
         this.state.items.cpf = cpfMask(this.state.items.cpf);
         this.setState({ ...this.state });
       },
-      error => console.log(error)
+      (error) => console.log(error)
     );
   }
 
@@ -132,10 +136,20 @@ export default class Cart extends Component {
             <Grid cols="8 8 8 8">
               <Card>
                 <Card.Header className="row">
-                  <Grid
-                    cols="4 4 4 4"
-                    class="d-flex justify-content-center "
-                  ></Grid>
+                  <Grid cols="4 4 4 4" class="d-flex justify-content-start ">
+                    <Container>
+                      <Row>
+                        <Grid cols="12 12 12 12">
+                          <label>Saldo em conta</label>
+                        </Grid>
+                      </Row>
+                      <Row>
+                        <Grid cols="12 12 12 12">
+                          <label>{doubleToReal(this.state.items.balance)}</label>
+                        </Grid>
+                      </Row>
+                    </Container>
+                  </Grid>
                   <Grid cols="4 4 4 4" class="d-flex justify-content-center ">
                     <i
                       className="fas fa-user-circle"
@@ -147,19 +161,19 @@ export default class Cart extends Component {
                       data-cy="btn-delete"
                       variant="outline-danger"
                       style={{ height: "fit-content" }}
-                      onClick={e =>
+                      onClick={(e) =>
                         axios
                           .delete(
                             `${baseURL}/user?id=${this.props.match.params.id}`
                           )
                           .then(
-                            result =>
+                            (result) =>
                               swal(
                                 "Sucesso",
                                 "Sua conta foi fechada com sucesso",
                                 "success"
-                              ).then(result => (window.location = "/")),
-                            error => console.log(error)
+                              ).then((result) => (window.location = "/")),
+                            (error) => console.log(error)
                           )
                       }
                     >

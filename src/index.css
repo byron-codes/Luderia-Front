@@ -94,3 +94,7 @@ td:hover {
 .correct-card {
   margin-top: -15px;
 }
+
+.dashboard-card-title {
+  font-size: 24px;
+}

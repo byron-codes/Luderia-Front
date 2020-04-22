@@ -5,18 +5,33 @@ import Container from "../components/Layout/Container";
 import Header from "../components/NavBar/NavBarAdmin";
 import Sidebar from "../components/SideBar/SideBar";
 import Footer from "../components/Footer/FooterAdmin";
-import Grid from "../components/Layout/Grid";
-import { baseURL } from "../endpoints";
-import swal from "sweetalert";
+import Select from "react-select";
 import axios from "axios";
+import swal from "sweetalert";
+import { baseURL } from "../endpoints";
+import FileBase64 from "react-file-base64";
+import Grid from "../components/Layout/Grid";
+import { convertDate } from "../util/converters";
+import { realMask, realUnMask } from "../mask";
 
 const initialState = {
-  name: "",
-  value: 0,
-  quantity: 0,
-  expirationDate: "",
-  code: "",
-  description: ""
+  items: {
+    id: 0,
+    name: "",
+    description: "",
+    expirationDate: "",
+    quantity: 0,
+    value: "R$ 0,00",
+    code: "",
+  },
+  errors: {
+    name: [],
+    description: [],
+    expirationDate: [],
+    quantity: [],
+    value: [],
+    code: [],
+  },
 };
 
 export default class Cupon extends Component {
@@ -25,32 +40,84 @@ export default class Cupon extends Component {
     super(props);
     this.setAttr = this.setAttr.bind(this);
     this.save = this.save.bind(this);
-  }
-
-  componentDidMount() {
-    if (this.props.match.params.id !== undefined) {
-      axios.get(`${baseURL}/coupon/${this.props.match.params.id}`).then(result =>
-        this.setState({
-          ...result.data
-        })
-      );
+    this.get = this.get.bind(this);
+    this.put = this.put.bind(this);
+    if (this.props.match.params.id) {
+      this.get();
     }
-    console.log(this.state);
   }
 
   setAttr(target, value) {
-    const temp = [];
-    temp[target] = value;
+    const temp = this.state;
+    temp.items[target] = value;
     this.setState({
-      ...temp
+      ...temp,
     });
   }
 
+  get() {
+    axios.get(`${baseURL}/coupon/${this.props.match.params.id}`).then(
+      (result) => {
+        result.data.value = realMask(`${result.data.value}`);
+        this.setState({ items: result.data });
+      },
+      (error) => console.log(error)
+    );
+  }
+
   save() {
-    axios.post(`${baseURL}/coupon`, this.state).then(
-      result =>
-        swal("Sucesso", "Cadastro de cupom efetuado com sucesso", "success"),
-      error => console.log(error)
+    this.setState({
+      items: { ...this.state.items },
+      errors: { ...initialState.errors },
+    });
+
+    for (var item in this.state.errors) {
+      this.state.errors[item] = [];
+      this.setState({ ...this.state });
+    }
+
+    const body = this.state.items;
+    body.expirationDate = convertDate(body.expirationDate);
+    body.value = realUnMask(body.value);
+
+    axios.post(`${baseURL}/coupon`, body).then(
+      (result) =>
+        swal("Sucesso", "O seu cadastro foi salvo com sucesso", "success").then(
+          (result) => (window.location = `/admin/coupons`)
+        ),
+      (error) => {
+        error.response.data.errors.map((error) => {
+          this.state.items.value = realMask(this.state.items.value + "");
+          this.state.errors[error.field].push(error.defaultMessage);
+          this.setState({
+            ...this.state,
+          });
+        });
+      }
+    );
+  }
+
+  put() {
+    const body = this.state.items;
+    body.expirationDate = convertDate(body.expirationDate);
+    body.value = realUnMask(body.value);
+
+    axios.put(`${baseURL}/coupon/${this.props.match.params.id}`, body).then(
+      (result) =>
+        swal(
+          "Sucesso",
+          "O seu cadastro foi atualizado com sucesso",
+          "success"
+        ).then((result) => (window.location = `/admin/coupons`)),
+      (error) => {
+        console.log(error.response);
+        error.response.data.errors.map((error) => {
+          this.state.errors[error.field].push(error.defaultMessage);
+          this.setState({
+            ...this.state,
+          });
+        });
+      }
     );
   }
 
@@ -67,78 +134,84 @@ export default class Cupon extends Component {
                   name="name"
                   cols="12 6"
                   label="Nome"
-                  placeholder="Nome do cupon"
-                  readOnly={false}
+                  placeholder="Nome do cupom"
                   type="text"
                   onChange={this.setAttr}
-                  value={this.state.name}
+                  value={this.state.items.name}
+                  errors={this.state.errors.name}
                   dataCy="name"
-                ></LabelAndInput>
-                <LabelAndInput
-                  name="expirationDate"
-                  cols="12 6"
-                  label="Data de validade"
-                  readOnly={false}
-                  type="text"
-                  onChange={this.setAttr}
-                  value={this.state.expirationDate}
-                  dataCy="expirationDate"
-                ></LabelAndInput>
-                <LabelAndInput
-                  name="quantity"
-                  cols="12 6"
-                  label="Quantidade"
-                  placeholder="Quantidade de cupons"
-                  readOnly={false}
-                  type="number"
-                  onChange={this.setAttr}
-                  value={this.state.quantity}
-                  dataCy="quantity"
-                ></LabelAndInput>
-                <LabelAndInput
-                  name="value"
-                  cols="12 6"
-                  label="Valor"
-                  placeholder="Valor do cupom"
-                  readOnly={false}
-                  type="number"
-                  onChange={this.setAttr}
-                  value={this.state.value}
-                  dataCy="value"
                 ></LabelAndInput>
                 <LabelAndInput
                   name="description"
                   cols="12 6"
                   label="Descrição"
-                  placeholder="Descrição de cupons"
-                  readOnly={false}
+                  placeholder="Descrição do cupom"
                   type="text"
                   onChange={this.setAttr}
-                  value={this.state.description}
+                  value={this.state.items.description}
+                  errors={this.state.errors.description}
                   dataCy="description"
                 ></LabelAndInput>
                 <LabelAndInput
-                  name="code"
-                  cols="12 6"
-                  label="Código"
-                  placeholder="Código do cupom"
-                  readOnly={false}
+                  name="expirationDate"
+                  cols="6 3"
+                  label="Data de válidade"
+                  placeholder="Data de válidade"
+                  type="date"
+                  onChange={this.setAttr}
+                  value={this.state.items.expirationDate}
+                  errors={this.state.errors.expirationDate}
+                  dataCy="expirationDate"
+                ></LabelAndInput>
+                <LabelAndInput
+                  name="quantity"
+                  cols="6 3"
+                  label="Quantidade"
+                  placeholder="Quantidade de cupons"
+                  type="number"
+                  onChange={this.setAttr}
+                  value={this.state.items.quantity}
+                  errors={this.state.errors.quantity}
+                  dataCy="quantity"
+                ></LabelAndInput>
+                <LabelAndInput
+                  name="value"
+                  cols="6 3"
+                  label="Valor do cupom"
+                  placeholder="Valor do produto"
                   type="text"
                   onChange={this.setAttr}
-                  value={this.state.code}
+                  value={this.state.items.value}
+                  errors={this.state.errors.value}
+                  mask={realMask}
+                  dataCy="value"
+                ></LabelAndInput>
+                <LabelAndInput
+                  name="code"
+                  cols="6 3"
+                  label="Código"
+                  placeholder="Código do cupom"
+                  type="text"
+                  onChange={this.setAttr}
+                  value={this.state.items.code}
+                  errors={this.state.errors.code}
                   dataCy="code"
                 ></LabelAndInput>
               </Row>
-              <Row>
+              <Row className="mt-3">
                 <Grid cols="6 6 6 6">
-                  <button type="button" className="btn btn-default">
+                  <button
+                    type="button"
+                    onClick={(e) => (window.location = "/admin/coupons")}
+                    className="btn btn-default"
+                  >
                     Cancelar
                   </button>
                 </Grid>
                 <Grid cols="6 6 6 6" class="d-flex justify-content-end">
                   <button
                     type="button"
-                    onClick={this.save}
+                    onClick={this.state.items.id !== 0 ? this.put : this.save}
                     className="btn btn-success pull-right"
                     data-cy="btn-save"
                   >

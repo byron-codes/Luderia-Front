@@ -1,6 +1,9 @@
 export function doubleToReal(value = 0) {
+  debugger
   value = value === "" ? 0 : value;
-  return "R$" + value.toFixed(2).toString().replace(".", ",");
+  value = value.toString().split(".");
+  value[1] = value[1] ? (value[1].toString().length == 1 ? `${value[1]}0` : `${value[1].charAt(0)}${value[1].charAt(1)}`) : "00";
+  return `R$ ${value[0]},${value[1]}`
 }
 
 export function convertDate(date, br = false, time = false) {

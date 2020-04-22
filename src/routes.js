@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 
 import App from "./app";
@@ -22,7 +22,6 @@ import SalesClient from "./screens/SalesClient";
 import Sale from "./screens/Sale";
 import Profile from "./screens/Profile";
 import SaleChange from "./screens/SaleChange";
-import AdminSales from "./screens/AdminSales";
 import Devolutions from "./screens/Devolutions";
 import DevolutionsActions from "./screens/DevolutionsAction";
 import Shipping from "./screens/Shipping";
@@ -31,8 +30,11 @@ import CouponClient from "./screens/CouponClient";
 import UserList from "./screens/UserList";
 import Game from "./screens/Game";
 import GameList from "./screens/GameList";
+import Expansion from "./screens/Expansion";
+import ExpansionList from "./screens/ExpansionList";
+import LoginAdmin from "./screens/LoginAdmin";
 
-export default props => (
+export default (props) => (
   <Router>
     <Switch>
       <Route path="/" component={App} exact></Route>
@@ -52,24 +54,28 @@ export default props => (
       <Route path="/admin/coupon/:id" component={Coupon} exact></Route>
       <Route path="/admin/coupons" component={CouponList} exact></Route>
       <Route path="/admin/users" component={UserList} exact></Route>
-      <Route path="/admin/accessories" component={Accessories} exact></Route>
+      <Route path="/admin/accessory" component={Accessories} exact></Route>
+      <Route path="/admin/accessory/:id" component={Accessories} exact></Route>
       <Route
-        path="/admin/accessories/list"
+        path="/admin/accessories"
         component={AccessoriesList}
         exact
       ></Route>
-      <Route path="/admin/sales" component={AdminSales} exact></Route>
       <Route path="/admin/reports" component={Reports} exact></Route>
       <Route path="/admin/shipping" component={Shipping} exact></Route>
       <Route path="/admin/devolutions" component={Devolutions} exact></Route>
       <Route
-        path="/admin/devolutions/actions"
+        path="/admin/devolutions/actions/:id"
         component={DevolutionsActions}
         exact
       ></Route>
       <Route path="/admin/game" component={Game} exact></Route>
       <Route path="/admin/game/:id" component={Game} exact></Route>
       <Route path="/admin/games" component={GameList} exact></Route>
+      <Route path="/admin/expansion" component={Expansion} exact></Route>
+      <Route path="/admin/expansion/:id" component={Expansion} exact></Route>
+      <Route path="/admin/expansions" component={ExpansionList} exact></Route>
+      <Route path="/admin/login" component={LoginAdmin} exact></Route>
       <Redirect from="*" to="/404"></Redirect>
     </Switch>
   </Router>

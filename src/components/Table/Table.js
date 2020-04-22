@@ -29,19 +29,17 @@ const dataTableSettings = {
   },
 };
 
+export function configDatabase() {
+  $.fn.dataTable.ext.errMode = "none";
+  $("#dataTable").on("error.dt", function (e, settings, techNote, message) {
+    console.log("An error has been reported by DataTables: ", message);
+  });
+  $(`#dataTable`).DataTable(dataTableSettings);
+}
+
 export default class Table extends Component {
   constructor(props) {
     super(props);
-  }
-
-  componentWillUpdate() {
-    $.fn.dataTable.ext.errMode = "none";
-    $("#dataTable").on("error.dt", function (e, settings, techNote, message) {
-      console.log("An error has been reported by DataTables: ", message);
-    });
-    if (!this.props.noUpdate) {
-      $(`#dataTable`).DataTable(dataTableSettings);
-    }
   }
 
   render() {

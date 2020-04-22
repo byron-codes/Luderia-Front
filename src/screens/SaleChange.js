@@ -38,6 +38,7 @@ const initialState = {
   rows: [],
   selectedItemValue: "",
   selectedReasonValue: "",
+  itemsToSave: [],
 };
 
 export default class SaleChange extends Component {
@@ -50,6 +51,7 @@ export default class SaleChange extends Component {
     this.setAttr = this.setAttr.bind(this);
     this.addRow = this.addRow.bind(this);
     this.indexById = this.indexById.bind(this);
+    this.save = this.save.bind(this);
     this.getItems();
   }
 
@@ -106,6 +108,23 @@ export default class SaleChange extends Component {
   }
 
   addRow() {
+    if (
+      this.state.toTable.item == "" ||
+      this.state.toTable.reasonLabel == "" ||
+      this.state.toTable.description == ""
+    ) {
+      swal("Ops...", "Todos os campos são obrigátorios", "error");
+      return;
+    }
+
+    let itemsToSave = this.state.itemsToSave;
+    itemsToSave.push({
+      changeReason: this.state.toTable.reason,
+      description: this.state.toTable.description,
+      id: this.state.toTable.itemId,
+      quantity: this.state.toTable.quantity,
+    });
+
     let rows = this.state.rows;
     rows.push(
       <tr>
@@ -116,26 +135,31 @@ export default class SaleChange extends Component {
       </tr>
     );
     let itemsSelect = this.state.itemsSelect;
-    // if (itemsSelect[this.indexById(this.state.toTable.itemId)].quantity === 1) {
-    //   itemsSelect.splice(this.indexById(this.state.toTable.itemId), 1);
-    //   this.setState({
-    //     ...this.state,
-    //     selectedItemValue: {},
-    //   });
-    // } else {
+
     itemsSelect[this.indexById(this.state.toTable.itemId)].quantity =
-      itemsSelect[this.indexById(this.state.toTable.itemId)].quantity - 1;
-    // }
-    //console.log()
+      itemsSelect[this.indexById(this.state.toTable.itemId)].quantity -
+      this.state.toTable.quantity;
+
+    if (itemsSelect[this.indexById(this.state.toTable.itemId)].quantity === 0) {
+      itemsSelect.splice(this.indexById(this.state.toTable.itemId), 1);
+    }
+
     this.setState({
       ...this.state,
       rows,
       itemsSelect,
-      toTable: initialState.toTable,
+      toTable: {
+        quantity: 1,
+        item: "",
+        itemId: 0,
+        reason: "",
+        reasonLabel: "",
+        description: "",
+      },
       selectedItemValue: "",
       selectedReasonValue: "",
+      itemsToSave,
     });
-    console.log(this.state)
   }
 
   indexById(id) {
@@ -147,6 +171,25 @@ export default class SaleChange extends Component {
     return undefined;
   }
 
+  save() {
+    if (this.state.rows.length > 0) {
+      axios
+        .post(`${baseURL}/sale-change`, {
+          sale: { id: this.props.match.params.id },
+          items: this.state.itemsToSave,
+        })
+        .then((result) => {
+          swal(
+            "Muito obrigado",
+            "Sua solicitação de troca será análisada em até 5 dias utéis",
+            "success"
+          ).then((value) => {
+            window.location = "/sales";
+          });
+        });
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -155,7 +198,7 @@ export default class SaleChange extends Component {
           <Card>
             <Row className="ml-3 mr-3 mt-3">
               <Grid cols="3 3 3 3">
-                <div>
+                <div data-cy="item-change">
                   <label>Produto</label>
                   <Select
                     options={this.state.itemsSelect}
@@ -163,6 +206,7 @@ export default class SaleChange extends Component {
                     placeholder="Selecione..."
                     onChange={(e) => this.setSelectedProduct(e)}
                     value={this.state.selectedItemValue}
+                    noOptionsMessage={() => "Sem itens"}
                   />
                 </div>
               </Grid>
@@ -177,11 +221,12 @@ export default class SaleChange extends Component {
                     onChange={this.setAttr}
                     value={this.state.toTable.quantity}
                     name="quantity"
+                    dataCy="quantity"
                   ></LabelAndInput>
                 </div>
               </Grid>
               <Grid cols="3 3 3 3">
-                <div>
+                <div data-cy="reason">
                   <label>Motivo</label>
                   <Select
                     options={reason}
@@ -199,6 +244,7 @@ export default class SaleChange extends Component {
                     onChange={this.setAttr}
                     value={this.state.toTable.description}
                     name="description"
+                    dataCy="description"
                   ></LabelAndInput>
                 </div>
               </Grid>
@@ -206,7 +252,7 @@ export default class SaleChange extends Component {
                 cols="1 1 1 1"
                 class="d-flex justify-content-center btn-change-sale"
               >
-                <Button variant="outline-success" onClick={() => this.addRow()}>
+                <Button variant="outline-success" onClick={() => this.addRow()} data-cy="btn-add">
                   <i className="fa fa-plus"></i>
                 </Button>
               </Grid>
@@ -242,24 +288,13 @@ export default class SaleChange extends Component {
               </Grid>
             </Row>
             <Card.Footer className="d-flex justify-content-end">
-              <Button
-                variant="outline-warning"
-                onClick={(e) =>
-                  swal(
-                    "Muito obrigado",
-                    "Sua solicitação de troca será análisada em até 5 dias utéis",
-                    "success"
-                  ).then((value) => {
-                    window.location = "/sales";
-                  })
-                }
-              >
+              <Button variant="outline-warning" onClick={() => this.save()} data-cy="btn-save-change">
                 Solicitar troca
               </Button>
             </Card.Footer>
           </Card>
         </Container>
-        <Footer></Footer>
+        <Footer fix></Footer>
       </React.Fragment>
     );
   }

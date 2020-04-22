@@ -130,6 +130,7 @@ class UserCard extends Component {
                           aclass="blue-box"
                           iconDataCy={`card-${card.id}`}
                           actionText="Selecionar cartão"
+                          dataCy="card-select"
                         />
                         {/* <ItemBox
                           title={`XXXX XXXX XXXX ${card.number.substr(12)}`}

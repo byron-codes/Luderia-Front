@@ -7,10 +7,12 @@ const INITIAL_STATE = {
 
 export default function(state = INITIAL_STATE, action) {
   state.forceUpdate = !state.forceUpdate;
-  const index = indexById(action.payload || { id: 0 }, state);
+  const id = action.payload && action.payload.item ? action.payload.item.id : 0
+  const index = indexById(id || 0, state);
   const items = state.items;
   switch (action.type) {
     case "CART_ADD":
+      debugger
       if (index !== undefined) {
         const final = items[index].quantity + parseInt(action.payload.quantity);
         items[index].quantity =
@@ -45,9 +47,9 @@ export default function(state = INITIAL_STATE, action) {
   }
 }
 
-function indexById(payload, state) {
+function indexById(id, state) {
   for (var i = 0; i < state.items.length; i++) {
-    if (state.items[i].id === payload.id) {
+    if (state.items[i].id === id) {
       return i;
     }
   }

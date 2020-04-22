@@ -34,7 +34,7 @@ export default class Item extends Component {
       result.data.map(item => {
         console.log(item)
         this.setState({
-          ...this.state.item.push(<CardImage name={item.name} value={item.value} image={`${baseURL}/product/${item.id}/image`} onClick={e => window.location = `/itens/${item.id}`}></CardImage>)
+          ...this.state.item.push(<CardImage dataCy={`item-${item.id}`} name={item.name} value={item.value} image={`${baseURL}/product/${item.id}/image`} onClick={e => window.location = `/itens/${item.id}`}></CardImage>)
         });
       });
     });

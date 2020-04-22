@@ -12,7 +12,7 @@ export default props => (
       </div>
       <div className="ml-3">
         <label>{props.name}</label>
-        <p className="font-weight-bold">{props.value}</p>
+        <p className="font-weight-bold">{props.value}<span className="ml-5">x{props.quantity}</span></p>
       </div>
     </div>
   </Card>

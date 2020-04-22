@@ -11,9 +11,8 @@ export default props => (
     data-accordion="false"
   >
     <MenuTag text="Vendas"></MenuTag>
-    <MenuItem icon="far fa-dot-circle" text="Pesquisar" href="/admin/sales"></MenuItem>
-    <MenuItem icon="far fa-dot-circle" text="Trocas" href="/admin/devolutions"></MenuItem>
     <MenuItem icon="far fa-dot-circle" text="Entregas" href="/admin/shipping"></MenuItem>
+    <MenuItem icon="far fa-dot-circle" text="Trocas" href="/admin/devolutions"></MenuItem>
 
     <MenuTag text="Produtos"></MenuTag>
     <MenuTree icon="fas fa-dice" text="Jogos">
@@ -21,22 +20,12 @@ export default props => (
       <MenuItem icon="far fa-dot-circle" text="Pesquisar" href="/admin/games"></MenuItem>
     </MenuTree>
     <MenuTree icon="fas fa-plus-circle" text="Espansões">
-      <MenuItem icon="far fa-dot-circle" text="Cadastrar"></MenuItem>
-      <MenuItem icon="far fa-dot-circle" text="Pesquisar"></MenuItem>
-      <MenuItem icon="far fa-dot-circle" text="Estoque"></MenuItem>
+      <MenuItem icon="far fa-dot-circle" text="Cadastrar" href="/admin/expansion"></MenuItem>
+      <MenuItem icon="far fa-dot-circle" text="Pesquisar" href="/admin/expansions"></MenuItem>
     </MenuTree>
     <MenuTree icon="fas fa-shopping-bag" text="Acessórios">
-      <MenuItem
-        href="/admin/accessories"
-        icon="far fa-dot-circle"
-        text="Cadastrar"
-      ></MenuItem>
-      <MenuItem
-        href="/admin/accessories/list"
-        icon="far fa-dot-circle"
-        text="Pesquisar"
-      ></MenuItem>
-      <MenuItem icon="far fa-dot-circle" text="Estoque"></MenuItem>
+      <MenuItem icon="far fa-dot-circle" text="Cadastrar" href="/admin/accessory"></MenuItem>
+      <MenuItem icon="far fa-dot-circle" text="Pesquisar" href="/admin/accessories"></MenuItem>
     </MenuTree>
     
     <MenuTag text="Outros"></MenuTag>

@@ -201,6 +201,7 @@ class UserAddress extends Component {
                             }}
                             iconDataCy={`address-${address.id}`}
                             actionText="Selecionar endereço"
+                            dataCy="address-select"
                           />
                           {/* <ItemBox
                             title={`${address.street}, ${address.number}`}

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import Table from "../components/Table/Table";
+import Table, { configDatabase } from "../components/Table/Table";
 import Header from "../components/NavBar/NavBarAdmin";
 import Sidebar from "../components/SideBar/SideBar";
 import Footer from "../components/Footer/FooterAdmin";
@@ -76,6 +76,7 @@ export default class GameList extends Component {
           </tr>
         ))
       });
+      configDatabase()
     });
   }
 

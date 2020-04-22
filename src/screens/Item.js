@@ -139,6 +139,7 @@ class Item extends Component {
                         onChange={this.setAttr}
                         value={this.state.cep}
                         mask={cepMask}
+                        dataCy="cep"
                       ></Input>
                       <Grid cols="3 3 3 3">
                         <Button
@@ -146,6 +147,7 @@ class Item extends Component {
                           variant="outline-primary"
                           onClick={this.calcFreight}
                           disabled={this.state.cep.length != 9 ? true : false}
+                          data-cy="calculate"
                         >
                           OK
                         </Button>
@@ -194,6 +196,7 @@ class Item extends Component {
                         type="number"
                         max={this.state.quantityStock}
                         min="1"
+                        dataCy="quantity-cart"
                       ></Input>
                     </Row>
                   </div>
@@ -216,6 +219,7 @@ class Item extends Component {
                                 "error"
                               )
                         }
+                        data-cy="btn-addCart"
                       >
                         Adicionar ao carrinho
                       </Button>

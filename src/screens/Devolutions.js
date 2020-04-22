@@ -4,134 +4,81 @@ import Sidebar from "../components/SideBar/SideBar";
 import Footer from "../components/Footer/FooterAdmin";
 import Grid from "../components/Layout/Grid";
 import { Row, Pagination, Card, Button } from "react-bootstrap";
-import Table from "../components/Table/Table";
+import Table, { configDatabase } from "../components/Table/Table";
 import Container from "../components/Layout/Container";
 import swal from "sweetalert";
+import axios from "axios";
+import { baseURL } from "../endpoints";
+import { convertDate, doubleToReal } from "../util/converters";
 
 export default class Devolutions extends Component {
-  state = {
-    rows: [
-      <tr className="table-light mouse-click">
-        <td scope="row" className="font-weight-bold">
-          <a href="/sale" className="link-table color-black">
-            #241
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            3 Itens
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            R$ 300,00
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            01/12/19
-          </a>
-        </td>
-        <td style={{ width: "150px" }}>
-          <Button variant="outline-success" href="/admin/devolutions/actions">
+  state = { rows: "" };
+  componentDidMount() {
+    axios.get(`${baseURL}/sale-change`).then((result) => {
+      this.setState({
+        rows: result.data.map((item) => {
+          let total = 0;
+          let totalItems = 0;
+          item.items.forEach((itemIn) => {
+            total += itemIn.product.value * itemIn.quantity;
+            totalItems += itemIn.quantity;
+          });
+          return (
+            <tr key={item.id}>
+              <td className="font-weight-bold">{`#${item.id}`}</td>
+              <td>{`${totalItems} Items`}</td>
+              <td>{doubleToReal(total)}</td>
+              <td>{convertDate(item.creationDate, true)}</td>
+              <td style={{ width: "150px" }}>
+                {this.returnButton(item.changeStatus, item.id)}
+              </td>
+            </tr>
+          );
+        }),
+      });
+      configDatabase();
+    });
+  }
+
+  returnButton(status, id) {
+    switch (status) {
+      case "PROCESSING":
+        return (
+          <Button
+            variant="outline-success"
+            href={`/admin/devolutions/actions/${id}`}
+          >
             Vizualizar
           </Button>
-        </td>
-      </tr>,
-      <tr className="table-light mouse-click">
-        <td scope="row" className="font-weight-bold">
-          <a href="/sale" className="link-table color-black">
-            #241
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            3 Itens
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            R$ 300,00
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            13/01/20
-          </a>
-        </td>
-        <td style={{ width: "150px" }}>
-          <Button variant="outline-success" href="/admin/devolutions/actions">
-            Vizualizar
-          </Button>
-        </td>
-      </tr>,
-      <tr className="table-light mouse-click">
-        <td scope="row" className="font-weight-bold">
-          <a href="/sale" className="link-table color-black">
-            #241
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            3 Itens
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            R$ 300,00
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            20/02/20
-          </a>
-        </td>
-        <td style={{ width: "150px" }}>
+        );
+      case "SHIPMENT":
+        return (
           <Button
             variant="outline-info"
-            onClick={e =>
-              swal(
-                "Produto recebido",
-                "O produto foi recebido e o cliente receberá o cupom de troca",
-                "success"
-              ).then(value => {
-                window.location = "/admin/devolutions";
-              })
+            onClick={() =>
+              axios
+                .put(
+                  `${baseURL}/sale-change/receive/${id}`
+                )
+                .then((result) =>
+                  swal(
+                    "Sucesso",
+                    "Produto recebido e cupom gerado ao usuário",
+                    "success"
+                  ).then((value) => {
+                    window.location = "/admin/devolutions";
+                  })
+                )
             }
           >
-            Receber produto
+            Receber
           </Button>
-        </td>
-      </tr>,
-      <tr className="table-light mouse-click">
-        <td scope="row" className="font-weight-bold">
-          <a href="/sale" className="link-table color-black">
-            #241
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            3 Itens
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            R$ 300,00
-          </a>
-        </td>
-        <td>
-          <a href="/sale" className="link-table color-black">
-            20/05/19
-          </a>
-        </td>
-        <td style={{ width: "150px" }}>
-          <Button disabled variant="outline-secondary" href="/admin/devolutions/actions">
-            Finalizada
-          </Button>
-        </td>
-      </tr>
-    ]
-  };
+        );
+      case "FINISHED":
+        return <Button variant="secondary">Finalizado</Button>;
+    }
+  }
+
   render() {
     return (
       <div className="wrapper">
@@ -141,81 +88,11 @@ export default class Devolutions extends Component {
           <Container>
             <Row className="d-flex justify-content-center">
               <Grid cols="12 12 12 12">
-                <div className="mb-3">
-                  <Row>
-                    <Grid cols="4 4 4 4" class="d-flex">
-                      <label className="mb-0 d-flex align-items-center">
-                        4 itens
-                      </label>
-                    </Grid>
-                    <Grid cols="8 8 8 8">
-                      <div className="row d-flex justify-content-end">
-                        <Grid
-                          cols="6 6 6 6"
-                          class="d-flex p-0 justify-content-end mr-3"
-                        >
-                          <label className="mr-2 mb-0 d-flex align-items-center">
-                            itens por página
-                          </label>
-                          <select
-                            className="custom-select"
-                            id="inputGroupSelect01"
-                            style={{ width: "75px" }}
-                          >
-                            <option value="1" defaultValue>
-                              12
-                            </option>
-                            <option value="2">26</option>
-                            <option value="3">36</option>
-                          </select>
-                        </Grid>
-                        <Grid cols="3 3 3 3" class="d-flex justify-content-end">
-                          <select
-                            className="custom-select"
-                            id="inputGroupSelect01"
-                            style={{ width: "150px" }}
-                          >
-                            <option value="1" defaultValue>
-                              finalizado
-                            </option>
-                            <option value="2">em andamento</option>
-                            <option value="3">processo de troca</option>
-                          </select>
-                        </Grid>
-                      </div>
-                    </Grid>
-                  </Row>
-                </div>
                 <Table
                   head={["Código", "Quantidade", "Valor", "Data", "Ações"]}
                   rows={this.state.rows}
+                  name="Trocas"
                 ></Table>
-                <div className="mt-3">
-                  <Row>
-                    <Grid
-                      cols="12 12 12 12"
-                      class="d-flex justify-content-center"
-                    >
-                      <Pagination>
-                        <Pagination.First />
-                        <Pagination.Prev />
-                        <Pagination.Item>{1}</Pagination.Item>
-                        <Pagination.Ellipsis />
-
-                        <Pagination.Item>{10}</Pagination.Item>
-                        <Pagination.Item>{11}</Pagination.Item>
-                        <Pagination.Item active>{12}</Pagination.Item>
-                        <Pagination.Item>{13}</Pagination.Item>
-                        <Pagination.Item>{14}</Pagination.Item>
-
-                        <Pagination.Ellipsis />
-                        <Pagination.Item>{20}</Pagination.Item>
-                        <Pagination.Next />
-                        <Pagination.Last />
-                      </Pagination>
-                    </Grid>
-                  </Row>
-                </div>
               </Grid>
             </Row>
           </Container>

@@ -19,6 +19,7 @@ const initialState = {
   coupon: {},
   saleStatus: "",
   canChange: false,
+  totalItems: 1,
 };
 
 export default class Cart extends Component {
@@ -34,9 +35,13 @@ export default class Cart extends Component {
     axios
       .get(`${baseURL}/sale/${this.props.match.params.id}`)
       .then((result) => {
-        console.log(result.data);
+        let totalItems = 0;
+        result.data.items.forEach((item) => {
+          totalItems += item.quantity;
+        });
         this.setState({
           ...result.data,
+          totalItems: totalItems,
         });
       });
   }
@@ -55,6 +60,7 @@ export default class Cart extends Component {
                       image={`${baseURL}/product/${item.product.id}/image`}
                       name={item.product.name}
                       value={doubleToReal(item.product.value)}
+                      quantity={item.quantity}
                     ></CardExchange>
                   </Grid>
                 ))}
@@ -69,14 +75,14 @@ export default class Cart extends Component {
                       <label>Data da compra</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>{convertDate(this.state.date, true)}</label>
+                      <label>{convertDate(this.state.creationDate, true)}</label>
                     </Grid>
                   </Row>
                   <Row>
                     <Grid cols="6 6 6 6">
                       <label>
-                        {this.state.items.length}{" "}
-                        {this.state.items.length === 1 ? "Produto" : "Produtos"}
+                        {`${this.state.totalItems} `}
+                        {this.state.totalItems === 1 ? "Produto" : "Produtos"}
                       </label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
@@ -150,6 +156,7 @@ export default class Cart extends Component {
                     <Button
                       variant="outline-warning"
                       href={`/sale/change/${this.state.id}`}
+                      data-cy="btn-change"
                     >
                       Solicitar troca
                     </Button>

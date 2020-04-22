@@ -12,18 +12,19 @@ import { bindActionCreators } from "redux";
 import {
   removeItem,
   configQuantity,
-  cleanCart
+  cleanCart,
 } from "../container/cartActions";
 import { selectCoupon, cleanCoupon } from "../container/couponActions";
 import CartRow from "../components/Card/CartRow";
 import { doubleToReal } from "../util/converters";
 import axios from "axios";
 import { baseURL } from "../endpoints";
+import { updateUser } from "../container/userActions";
 
 const initialState = {
   coupon: "",
   total: 0,
-  shipment: { freight: 0, days: 0 }
+  shipment: { freight: 0, days: 0 },
 };
 
 class Cart extends Component {
@@ -34,6 +35,8 @@ class Cart extends Component {
     this.setAttr = this.setAttr.bind(this);
     this.save = this.save.bind(this);
     this.getFreight = this.getFreight.bind(this);
+    this.calculateTotal = this.calculateTotal.bind(this);
+    this.props.updateUser(this.props.user.id);
   }
 
   componentDidMount() {
@@ -44,30 +47,42 @@ class Cart extends Component {
     const temp = this.state;
     temp[target] = value;
     this.setState({
-      ...temp
+      ...temp,
     });
   }
 
   save() {
-    axios.post(`${baseURL}/sale`, this.props).then(result => {
+    console.log(this.props);
+    axios.post(`${baseURL}/sale`, this.props).then((result) => {
       this.props.cleanCart();
       this.props.cleanCoupon();
       swal(
         "Muito obrigado",
         "Sua compra foi efetuada com succeso, seus itens estão em separação",
         "success"
-      ).then(value => {
+      ).then((value) => {
         window.location = "/";
       });
     });
   }
 
   getFreight() {
-    axios
-      .get(`${baseURL}/freight/${this.props.address.cep.replace("-", "")}`)
-      .then(result => {
-        this.setState({ ...this.state, shipment: { ...result.data } });
-      });
+    if (this.props.address.cep) {
+      axios
+        .get(`${baseURL}/freight/${this.props.address.cep.replace("-", "")}`)
+        .then((result) => {
+          this.setState({ ...this.state, shipment: { ...result.data } });
+        });
+    }
+  }
+
+  calculateTotal() {
+    let total =
+      this.props.total -
+      (this.props.coupon.value || 0) -
+      this.props.user.balance +
+      this.state.shipment.freight;
+    return total > 0 ? total : this.state.shipment.freight;
   }
 
   render() {
@@ -77,7 +92,8 @@ class Cart extends Component {
       removeItem,
       configQuantity,
       creditCard,
-      address
+      address,
+      user,
     } = this.props;
     const { shipment } = this.state;
     return (
@@ -86,7 +102,7 @@ class Cart extends Component {
         <Container class="mt-100">
           <Row>
             <Grid cols="9 9 9 9">
-              {items.map(item => (
+              {items.map((item) => (
                 <CartRow
                   key={item.id}
                   id={item.id}
@@ -127,6 +143,14 @@ class Cart extends Component {
                   )}
                   <Row>
                     <Grid cols="6 6 6 6">
+                      <label>Saldo em conta</label>
+                    </Grid>
+                    <Grid cols="6 6 6 6" class="d-flex justify-content-end">
+                      <label>{doubleToReal(user.balance)}</label>
+                    </Grid>
+                  </Row>
+                  <Row>
+                    <Grid cols="6 6 6 6">
                       <label>Frete</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
@@ -147,13 +171,7 @@ class Cart extends Component {
                       <label>Total</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>
-                        {doubleToReal(
-                          this.props.total -
-                            (coupon.value || 0) +
-                            shipment.freight
-                        )}
-                      </label>
+                      <label>{doubleToReal(this.calculateTotal())}</label>
                     </Grid>
                   </Row>
                   <div className="dropdown-divider"></div>
@@ -166,6 +184,7 @@ class Cart extends Component {
                         type="text"
                         onChange={this.setAttr}
                         value={this.state.coupon}
+                        dataCy="coupon"
                       ></LabelAndInput>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
@@ -174,11 +193,12 @@ class Cart extends Component {
                         style={{
                           height: "40px",
                           width: "80px",
-                          marginTop: "30px"
+                          marginTop: "30px",
                         }}
                         onClick={() =>
                           this.props.selectCoupon(this.state.coupon)
                         }
+                        data-cy="add-coupon"
                       >
                         Aplicar
                       </Button>
@@ -201,6 +221,7 @@ class Cart extends Component {
                     class="m-0"
                     aclass="marsala-box"
                     href="/user/0/cards"
+                    dataCy="change-card"
                   ></SmallBox>
                   <SmallBox
                     title={`${
@@ -214,10 +235,15 @@ class Cart extends Component {
                     color="m-0"
                     aclass="blue-box"
                     href="/user/0/addresses"
+                    dataCy="change-address"
                   ></SmallBox>
                 </div>
                 <div className="card-footer">
-                  <Button variant="outline-success" onClick={() => this.save()}>
+                  <Button
+                    variant="outline-success"
+                    onClick={() => this.save()}
+                    data-cy="btn-save"
+                  >
                     Finalizar compra
                   </Button>
                 </div>
@@ -231,18 +257,18 @@ class Cart extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   items: state.cart.items,
   boo: state.cart.forceUpdate,
   creditCard: state.creditCard,
   address: state.address,
   coupon: state.coupon,
   total: state.cart.total,
-  user: state.user
+  user: state.user,
 });
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
-    { removeItem, configQuantity, selectCoupon, cleanCart, cleanCoupon },
+    { removeItem, configQuantity, selectCoupon, cleanCart, cleanCoupon, updateUser },
     dispatch
   );
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);

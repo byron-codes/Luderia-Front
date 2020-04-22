@@ -19,9 +19,9 @@ export default props => (
           ></i>
         </div>
         <div className="info">
-          <a href="/profile" className="d-block">
+          <span className="d-block text-white">
             Wagner de Souza
-          </a>
+          </span>
         </div>
       </div>
       <Menu></Menu>

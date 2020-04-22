@@ -18,19 +18,60 @@ const initialState = {
   items: {
     id: 0,
     name: "",
+    originalName: "",
     description: "",
+    releaseDate: "",
     value: "R$ 0,00",
+    languageDependence: "NONE",
+    level: "EASY",
+    gameId: undefined,
     image: "",
   },
   errors: {
     name: [],
+    originalName: [],
     description: [],
+    releaseDate: [],
     value: [],
+    languageDependence: [],
+    level: [],
+    gameId: [],
     image: [],
   },
+  games: [],
 };
 
-export default class Accessories extends Component {
+const languageDependence = [
+  { value: "NONE", label: "Nenhuma" },
+  { value: "LOW", label: "Baixa" },
+  { value: "MEDIUM", label: "Média" },
+  { value: "HIGH", label: "Alta" },
+  { value: "IMPOSSIBLE", label: "Impossível" },
+];
+
+const languageDependenceValues = {
+  NONE: languageDependence[0],
+  LOW: languageDependence[1],
+  MEDIUM: languageDependence[2],
+  HIGH: languageDependence[3],
+  IMPOSSIBLE: languageDependence[4],
+};
+
+const level = [
+  { value: "EASY", label: "Fácil" },
+  { value: "MEDIUM", label: "Médio" },
+  { value: "HARD", label: "Díficil" },
+  { value: "EXPERT", label: "Especialista" },
+];
+
+const levelValues = {
+  EASY: level[0],
+  MEDIUM: level[1],
+  HARD: level[2],
+  EXPERT: level[3],
+};
+
+export default class Expansion extends Component {
   state = { ...initialState };
   constructor(props) {
     super(props);
@@ -38,9 +79,11 @@ export default class Accessories extends Component {
     this.save = this.save.bind(this);
     this.get = this.get.bind(this);
     this.put = this.put.bind(this);
+    this.getGames = this.getGames.bind(this);
     if (this.props.match.params.id) {
       this.get();
     }
+    this.getGames();
   }
 
   setAttr(target, value) {
@@ -56,8 +99,24 @@ export default class Accessories extends Component {
     this.setState({ ...this.state });
   }
 
+  getGames() {
+    axios.get(`${baseURL}/game`).then(
+      (result) => {
+        let games = [];
+        result.data.map((game) => {
+          games.push({
+            value: game.id,
+            label: game.name,
+          });
+        });
+        this.setState({ ...this.state, games });
+      },
+      (error) => console.log(error)
+    );
+  }
+
   get() {
-    axios.get(`${baseURL}/accessories/${this.props.match.params.id}`).then(
+    axios.get(`${baseURL}/expansion/${this.props.match.params.id}`).then(
       (result) => {
         result.data.image = "";
         result.data.value = realMask(`0${result.data.value}`);
@@ -81,11 +140,12 @@ export default class Accessories extends Component {
     const body = this.state.items;
     body.releaseDate = convertDate(body.releaseDate);
     body.value = realUnMask(body.value);
+    body.gameId = body.gameId ? body.gameId.value : undefined;
 
-    axios.post(`${baseURL}/accessories`, body).then(
+    axios.post(`${baseURL}/expansion`, body).then(
       (result) =>
         swal("Sucesso", "O seu cadastro foi salvo com sucesso", "success").then(
-          (result) => (window.location = `/admin/accessories`)
+          (result) => (window.location = `/admin/expansion`)
         ),
       (error) => {
         error.response.data.errors.map((error) => {
@@ -103,15 +163,16 @@ export default class Accessories extends Component {
     const body = this.state.items;
     body.releaseDate = convertDate(body.releaseDate);
     body.value = realUnMask(body.value);
-
-    axios.put(`${baseURL}/accessories/${this.props.match.params.id}`, body).then(
+    body.gameId = body.gameId ? body.gameId.value : undefined;
+    axios.put(`${baseURL}/expansion/${this.props.match.params.id}`, body).then(
       (result) =>
         swal(
           "Sucesso",
           "O seu cadastro foi atualizado com sucesso",
           "success"
-        ).then((result) => (window.location = `/admin/accessories`)),
+        ).then((result) => (window.location = `/admin/expansion`)),
       (error) => {
+        console.log(error.response);
         error.response.data.errors.map((error) => {
           this.state.errors[error.field].push(error.defaultMessage);
           this.setState({
@@ -123,6 +184,7 @@ export default class Accessories extends Component {
   }
 
   render() {
+    console.log(this.state.geames);
     return (
       <div className="wrapper">
         <Header></Header>
@@ -143,6 +205,17 @@ export default class Accessories extends Component {
                   dataCy="name"
                 ></LabelAndInput>
                 <LabelAndInput
+                  name="originalName"
+                  cols="12 6"
+                  label="Nome original"
+                  placeholder="Nome original do jogo"
+                  type="text"
+                  onChange={this.setAttr}
+                  value={this.state.items.originalName}
+                  errors={this.state.errors.originalName}
+                  dataCy="originalName"
+                ></LabelAndInput>
+                <LabelAndInput
                   name="description"
                   cols="12 6"
                   label="Descrição"
@@ -152,6 +225,17 @@ export default class Accessories extends Component {
                   value={this.state.items.description}
                   errors={this.state.errors.description}
                   dataCy="description"
+                ></LabelAndInput>
+                <LabelAndInput
+                  name="releaseDate"
+                  cols="12 6"
+                  label="Data de lançamento"
+                  placeholder="Data de lançamento do jogo"
+                  type="date"
+                  onChange={this.setAttr}
+                  value={this.state.items.releaseDate}
+                  errors={this.state.errors.releaseDate}
+                  dataCy="releaseDate"
                 ></LabelAndInput>
                 <LabelAndInput
                   name="value"
@@ -166,6 +250,58 @@ export default class Accessories extends Component {
                   dataCy="value"
                 ></LabelAndInput>
                 <div className="col-xs-6 col-sm-3">
+                  <label>Dependência de linguagem</label>
+                  <div data-cy="languageDependence">
+                    <Select
+                      options={languageDependence}
+                      placeholder="Selecione..."
+                      value={
+                        languageDependenceValues[
+                          this.state.items.languageDependence
+                        ]
+                      }
+                      onChange={(item) => {
+                        this.state.items.languageDependence = item.value;
+                        this.setState({
+                          ...this.state,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-xs-6 col-sm-3">
+                  <label>Nível de dificuldade</label>
+                  <div data-cy="level">
+                    <Select
+                      options={level}
+                      placeholder="Selecione..."
+                      value={levelValues[this.state.items.level]}
+                      onChange={(item) => {
+                        this.state.items.level = item.value;
+                        this.setState({
+                          ...this.state,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-xs-6 col-sm-3">
+                  <label>Jogo base</label>
+                  <div data-cy="style">
+                    <Select
+                      options={this.state.games}
+                      placeholder="Selecione..."
+                      value={this.state.items.gameId}
+                      onChange={(item) => {
+                        this.state.items.gameId = item;
+                        this.setState({
+                          ...this.state,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-xs-6 col-sm-3">
                   <FileBase64
                     multiple={false}
                     onDone={this.getFiles.bind(this)}
@@ -176,7 +312,7 @@ export default class Accessories extends Component {
                 <Grid cols="6 6 6 6">
                   <button
                     type="button"
-                    onClick={(e) => (window.location = "/admin/accessories")}
+                    onClick={(e) => (window.location = "/admin/expansions")}
                     className="btn btn-default"
                   >
                     Cancelar

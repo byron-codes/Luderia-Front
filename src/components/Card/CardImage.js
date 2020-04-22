@@ -8,6 +8,7 @@ export default class CardImage extends Component {
       <div
         className="col col-md-3 justify-content-center d-flex mouse-click"
         onClick={this.props.onClick}
+        data-cy={this.props.dataCy}
       >
         <Card style={{ width: "18rem", padding: "5px" }}>
           <Card.Img

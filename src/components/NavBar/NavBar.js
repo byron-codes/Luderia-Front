@@ -73,6 +73,7 @@ class NavBar extends Component {
               href="#"
               aria-expanded="false"
               onClick={e => (window.location = "/cart")}
+              data-cy="go-cart"
             >
               <i
                 className="fas fa-shopping-cart"
@@ -168,7 +169,7 @@ class NavBar extends Component {
                   >
                     Minha conta
                   </a>
-                  <a href="/sales" className="mt-2 mb-2">
+                  <a href="/sales" className="mt-2 mb-2" data-cy="my-sales">
                     Meus pedidos
                   </a>
                   <a

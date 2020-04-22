@@ -4,7 +4,7 @@ import Container from "../components/Layout/Container";
 import Grid from "../components/Layout/Grid";
 import { Row, Pagination, Card } from "react-bootstrap";
 import Footer from "../components/Footer/Footer";
-import Table from "../components/Table/Table";
+import Table, { configDatabase } from "../components/Table/Table";
 import { doubleToReal, convertDate } from "../util/converters";
 import axios from "axios";
 import { baseURL } from "../endpoints";
@@ -13,43 +13,52 @@ export default class Itens extends Component {
   state = { rows: "" };
 
   componentDidMount() {
-    axios.get(`${baseURL}/sale`).then(result => {
+    axios.get(`${baseURL}/sale`).then((result) => {
       this.setState({
-        rows: result.data.map(item => (
-          <tr key={item.id} data-cy={item.id}>
-            <td className="font-weight-bold">
-              <a
-                href={`/sale/${item.id}`}
-                className="link-table color-black"
-              >{`#${item.id}`}</a>
-            </td>
-            <td>
-              <a
-                href={`/sale/${item.id}`}
-                className="link-table color-black"
-              >{`${item.items.length} Itens`}</a>
-            </td>
-            <td>
-              <a href={`/sale/${item.id}`} className="link-table color-black">
-                {doubleToReal(item.total || 0)}
-              </a>
-            </td>
-            <td>
-              <a href={`/sale/${item.id}`} className="link-table color-black">
-                {convertDate(item.date, true)}
-              </a>
-            </td>
-            <td>
-              <a
-                href={`/sale/${item.id}`}
-                className={`link-table ${this.generateClass(item.saleStatus)}`}
-              >
-                {this.translate(item.saleStatus)}
-              </a>
-            </td>
-          </tr>
-        ))
+        rows: result.data.map((item) => {
+          let total = 0;
+          item.items.forEach((item) => {
+            total += item.quantity;
+          });
+          return (
+            <tr key={item.id}>
+              <td className="font-weight-bold" data-cy="item-row">
+                <a
+                  href={`/sale/${item.id}`}
+                  className="link-table color-black"
+                >{`#${item.id}`}</a>
+              </td>
+              <td>
+                <a
+                  href={`/sale/${item.id}`}
+                  className="link-table color-black"
+                >{`${total} Produtos`}</a>
+              </td>
+              <td>
+                <a href={`/sale/${item.id}`} className="link-table color-black">
+                  {doubleToReal(item.total || 0)}
+                </a>
+              </td>
+              <td>
+                <a href={`/sale/${item.id}`} className="link-table color-black">
+                  {convertDate(item.creationDate, true)}
+                </a>
+              </td>
+              <td>
+                <a
+                  href={`/sale/${item.id}`}
+                  className={`link-table ${this.generateClass(
+                    item.saleStatus
+                  )}`}
+                >
+                  {this.translate(item.saleStatus)}
+                </a>
+              </td>
+            </tr>
+          );
+        }),
       });
+      configDatabase();
     });
   }
 
@@ -65,6 +74,8 @@ export default class Itens extends Component {
         return "text-success";
       case "EXCHANGE":
         return "text-warning";
+      case "EXCHANGEFINISHED":
+        return "text-success";
     }
   }
 
@@ -78,121 +89,11 @@ export default class Itens extends Component {
         return "Finalizada";
       case "EXCHANGE":
         return "Processo de troca";
+      case "EXCHANGEFINISHED":
+        return "Troca finalizada";
     }
   }
 
-  // state = {
-  //   rows: [
-  //     <tr className="table-light mouse-click">
-  //       <td scope="row" className="font-weight-bold">
-  //         <a href="/sale" className="link-table color-black">
-  //           #241
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           3 Itens
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           R$ 300,00
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           01/12/19
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table text-success">
-  //           finalizado
-  //         </a>
-  //       </td>
-  //     </tr>,
-  //     <tr className="table-light mouse-click">
-  //       <td scope="row" className="font-weight-bold">
-  //         <a href="/sale" className="link-table color-black">
-  //           #241
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           3 Itens
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           R$ 300,00
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           13/01/20
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table text-info">
-  //           em andamento
-  //         </a>
-  //       </td>
-  //     </tr>,
-  //     <tr className="table-light mouse-click">
-  //       <td scope="row" className="font-weight-bold">
-  //         <a href="/sale" className="link-table color-black">
-  //           #241
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           3 Itens
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           R$ 300,00
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           20/02/20
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table text-warning">
-  //           processo de troca
-  //         </a>
-  //       </td>
-  //     </tr>,
-  //     <tr className="table-light mouse-click">
-  //       <td scope="row" className="font-weight-bold">
-  //         <a href="/sale" className="link-table color-black">
-  //           #241
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           3 Itens
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           R$ 300,00
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table color-black">
-  //           20/05/19
-  //         </a>
-  //       </td>
-  //       <td>
-  //         <a href="/sale" className="link-table text-success">
-  //           finalizado
-  //         </a>
-  //       </td>
-  //     </tr>
-  //   ]
-  // };
   render() {
     return (
       <React.Fragment>
@@ -207,7 +108,7 @@ export default class Itens extends Component {
                   "Quantidade de itens",
                   "Total",
                   "Data",
-                  "Status"
+                  "Status",
                 ]}
                 rows={this.state.rows}
               ></Table>

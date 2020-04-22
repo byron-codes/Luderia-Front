@@ -17,3 +17,11 @@ export const logout = () => {
     type: "USER_LOGOUT"
   };
 };
+
+export const updateUser = (id) => {
+  const payload = axios.get(`${baseURL}/user/${id}`);
+  return {
+    type: "USER_UPDATE",
+    payload: payload
+  };
+}
