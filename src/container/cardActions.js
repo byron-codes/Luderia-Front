@@ -4,3 +4,10 @@ export const selectCard = card => {
     payload: { ...card }
   };
 };
+
+export const removeCard = id => {
+  return {
+    type: "CARD_REMOVE",
+    payload: id
+  };
+};

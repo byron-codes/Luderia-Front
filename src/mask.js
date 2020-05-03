@@ -8,10 +8,6 @@ export const cpfMask = value => {
 };
 
 export const realMask = value => {
-  value = value.toString().split(".");
-  value[1] = value[1] ? (value[1].toString().length === 1 ? `${value[1]}0` : `${value[1].charAt(0)}${value[1].charAt(1)}`) : "00";
-  value = `${value[0]}.${value[1]}`
-
   const v = ((value.replace(/\D/g, '') / 100).toFixed(2) + '').split('.');
 
   const m = v[0].split('').reverse().join('').match(/.{1,3}/g);

@@ -14,6 +14,12 @@ export default class CardImage extends Component {
           <Card.Img
             variant="top"
             src={this.props.image}
+            style={{
+              minHeight: "228px",
+              maxHeight: "228px",
+              minWidth: "228px",
+              maxWidth: "228px",
+            }}
           />
           <Card.Body>
             <Card.Title>{this.props.name}</Card.Title>

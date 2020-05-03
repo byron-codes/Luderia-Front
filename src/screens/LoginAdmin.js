@@ -10,8 +10,8 @@ import axios from "axios";
 import { cpfMask, cpfUnMask } from "../mask";
 
 const initialState = {
-  nickname: { value: "", errors: [] },
-  password: { value: "", errors: [] },
+  nickname: "",
+  password: "",
 };
 
 export default class LoginAdmin extends Component {
@@ -24,9 +24,9 @@ export default class LoginAdmin extends Component {
   setAttr(target, value) {
     const temp = [];
     temp[target] = this.state[target];
-    temp[target].value = value;
+    temp[target] = value;
     this.setState({
-      ...temp
+      ...temp,
     });
   }
 
@@ -47,7 +47,7 @@ export default class LoginAdmin extends Component {
                       cols="12 12 12 12"
                       class="d-flex justify-content-center"
                     >
-                      <h4 className="text-marsala">Cadastre-se</h4>
+                      <h4 className="text-marsala">Login</h4>
                     </Grid>
                   </Row>
                   <Row>
@@ -57,8 +57,7 @@ export default class LoginAdmin extends Component {
                       placeholder="Nickname"
                       type="text"
                       onChange={this.setAttr}
-                      value={this.state.nickname.value}
-                      errors={this.state.nickname.errors}
+                      value={this.state.nickname}
                       dataCy="nickname"
                     ></Input>
                   </Row>
@@ -69,22 +68,41 @@ export default class LoginAdmin extends Component {
                       placeholder="Senha"
                       type="password"
                       onChange={this.setAttr}
-                      value={this.state.password.value}
-                      errors={this.state.password.errors}
+                      value={this.state.password}
                       dataCy="password"
                     ></Input>
                   </Row>
                   <Row>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-start">
-                      <Button variant="outline-warning">cancelar</Button>
+                      <Button
+                        variant="outline-warning"
+                        onClick={() => {
+                          window.location = "/";
+                        }}
+                      >
+                        Voltar
+                      </Button>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
                       <Button
                         variant="outline-success"
-                        onClick={this.save}
+                        onClick={() => {
+                          axios
+                            .post(`${baseURL}/user/login`, {
+                              login: this.state.nickname,
+                              password: this.state.password,
+                            })
+                            .then((result) => {
+                              if (result.data.userType === "ADMIN") {
+                                window.location = "/admin";
+                              } else {
+                                window.location = "/";
+                              }
+                            });
+                        }}
                         data-cy="btn-save"
                       >
-                        cadastrar
+                        Login
                       </Button>
                     </Grid>
                   </Row>

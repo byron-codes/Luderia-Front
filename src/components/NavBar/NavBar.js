@@ -172,12 +172,12 @@ class NavBar extends Component {
                   <a href="/sales" className="mt-2 mb-2" data-cy="my-sales">
                     Meus pedidos
                   </a>
-                  <a
+                  {/* <a
                     href={`/user/${user.id}/coupon`}
                     className="mt-2 mb-2"
                   >
                     Meus cupons
-                  </a>
+                  </a> */}
                   <a href="/" onClick={() => logout()} className="mt-2 mb-2">
                     Sair
                   </a>

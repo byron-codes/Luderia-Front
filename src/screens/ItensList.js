@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Navbar from "../components/NavBar/NavBar";
 import Container from "../components/Layout/Container";
 import Grid from "../components/Layout/Grid";
-import { Row, Dropdown, Pagination } from "react-bootstrap";
+import { Row, Dropdown, Pagination, Button } from "react-bootstrap";
 import CardImage from "../components/Card/CardImage";
 import CheckBox from "../components/Checkbox/CheckBox";
 import Select from "react-select";
@@ -13,28 +13,36 @@ import { baseURL } from "../endpoints";
 const options = [
   { value: "chocolate", label: "Galápagos" },
   { value: "strawberry", label: "Paper Games" },
-  { value: "vanilla", label: "Arcano Games" }
+  { value: "vanilla", label: "Arcano Games" },
 ];
 
 const options2 = [
   { value: "chocolate", label: "Fácil" },
   { value: "strawberry", label: "Médio" },
   { value: "vanilla", label: "Díficil" },
-  { value: "vanilla2", label: "Especialista" }
+  { value: "vanilla2", label: "Especialista" },
 ];
 
 const initialState = {
-  item: []
+  item: [],
 };
 
 export default class Item extends Component {
   state = { ...initialState };
   componentDidMount() {
-    axios.get(`${baseURL}/product`).then(result => {
-      result.data.map(item => {
-        console.log(item)
+    axios.get(`${baseURL}/product`).then((result) => {
+      result.data.map((item) => {
+        console.log(item);
         this.setState({
-          ...this.state.item.push(<CardImage dataCy={`item-${item.id}`} name={item.name} value={item.value} image={`${baseURL}/product/${item.id}/image`} onClick={e => window.location = `/itens/${item.id}`}></CardImage>)
+          ...this.state.item.push(
+            <CardImage
+              dataCy={`item-${item.id}`}
+              name={item.name}
+              value={item.value}
+              image={`${baseURL}/product/${item.id}/image`}
+              onClick={(e) => (window.location = `/itens/${item.id}`)}
+            ></CardImage>
+          ),
         });
       });
     });
@@ -76,17 +84,17 @@ export default class Item extends Component {
                     </Row>
                     <Row>
                       <Grid cols="12 12 12 12">
-                        <CheckBox text="Jogos"></CheckBox>
+                        <CheckBox text="Jogos" name="game"></CheckBox>
                       </Grid>
                     </Row>
                     <Row>
                       <Grid cols="12 12 12 12">
-                        <CheckBox text="Expansões"></CheckBox>
+                        <CheckBox text="Expansões" name="expansion"></CheckBox>
                       </Grid>
                     </Row>
                     <Row>
                       <Grid cols="12 12 12 12">
-                        <CheckBox text="Acessórios"></CheckBox>
+                        <CheckBox text="Acessórios" name="accessory"></CheckBox>
                       </Grid>
                     </Row>
                     <div className="dropdown-divider"></div>
@@ -105,7 +113,7 @@ export default class Item extends Component {
                         />
                       </Grid>
                     </Row>
-                    <div className="dropdown-divider"></div>
+                    {/* <div className="dropdown-divider"></div>
                     <Row>
                       <Grid cols="12 12 12 12">
                         <label>Produtoras</label>
@@ -120,7 +128,7 @@ export default class Item extends Component {
                           placeholder="Selecione..."
                         />
                       </Grid>
-                    </Row>
+                    </Row> */}
                     <div className="dropdown-divider"></div>
                     <Row>
                       <Grid cols="12 12 12 12">
@@ -134,14 +142,25 @@ export default class Item extends Component {
                           placeholder="De"
                         ></input>
                       </Grid>
-                      <Grid>
-                        <label className="m-0 align-middle">-</label>
+                      <Grid cols="2 2 2 2" class="d-flex justify-content-center">
+                        <label className="m-0 align-middle mt-1">-</label>
                       </Grid>
                       <Grid cols="5 5 5 5">
                         <input
                           className="form-control"
                           placeholder="Até"
                         ></input>
+                      </Grid>
+                    </Row>
+                    <div className="dropdown-divider"></div>
+                    <Row>
+                      <Grid cols="12 12 12 12">
+                        <Button
+                          variant="outline-primary"
+                          style={{ width: "inherit" }}
+                        >
+                          Buscar
+                        </Button>
                       </Grid>
                     </Row>
                   </Container>
@@ -153,7 +172,7 @@ export default class Item extends Component {
                 <Row>
                   <Grid cols="4 4 4 4" class="d-flex">
                     <label className="mb-0 d-flex align-items-center">
-                      125 produtos
+                      {`${this.state.item.length} Produtos`}
                     </label>
                   </Grid>
                   <Grid cols="8 8 8 8">

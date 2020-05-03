@@ -20,6 +20,7 @@ import { doubleToReal } from "../util/converters";
 import axios from "axios";
 import { baseURL } from "../endpoints";
 import { updateUser } from "../container/userActions";
+import { removeCard } from "../container/cardActions";
 
 const initialState = {
   coupon: "",
@@ -53,6 +54,7 @@ class Cart extends Component {
 
   save() {
     console.log(this.props);
+    debugger
     axios.post(`${baseURL}/sale`, this.props).then((result) => {
       this.props.cleanCart();
       this.props.cleanCoupon();
@@ -208,23 +210,6 @@ class Cart extends Component {
                 <div className="card-body p-0">
                   <SmallBox
                     title={`${
-                      creditCard.number
-                        ? `XXXX XXXX XXXX ${creditCard.number.substr(12)}`
-                        : `XXXX XXXX XXXX XXXX`
-                    }`}
-                    text={creditCard.name || "Nenhum cartão selecionado"}
-                    icon="far fa-credit-card"
-                    iconClass="marsala-icon"
-                    actionText={`${
-                      creditCard.number ? "Trocar cartão" : "Selecionar cartão"
-                    }`}
-                    class="m-0"
-                    aclass="marsala-box"
-                    href="/user/0/cards"
-                    dataCy="change-card"
-                  ></SmallBox>
-                  <SmallBox
-                    title={`${
                       address.street
                         ? `${address.street}, ${address.number}`
                         : "XXXXX, XX"
@@ -236,16 +221,49 @@ class Cart extends Component {
                     aclass="blue-box"
                     href="/user/0/addresses"
                     dataCy="change-address"
+                    class="m-0"
                   ></SmallBox>
+                  {creditCard.map((creditCard) => {
+                    return <SmallBox
+                      title={`XXXX XXXX XXXX ${creditCard.number.substr(12)}`}
+                      text={creditCard.name}
+                      icon="far fa-credit-card"
+                      iconClass="marsala-icon"
+                      actionText={"Remover cartão"}
+                      class="m-0"
+                      aclass="marsala-box"
+                      dataCy="change-card"
+                      onClick={() => {
+                        this.props.removeCard(creditCard.id)
+                        window.location = window.location
+                      }}
+                    ></SmallBox>;
+                  })}
+                  <div
+                    class="text-center mt-2"
+                    style={{ background: "#008000" }}
+                  >
+                    <a
+                      className="small-box-footer mouse-click text-white"
+                      href="/user/0/cards"
+                    >
+                      Adicionar novo cartão
+                      <i className="ml-1 fas fa-arrow-circle-right"></i>
+                    </a>
+                  </div>
                 </div>
                 <div className="card-footer">
-                  <Button
-                    variant="outline-success"
-                    onClick={() => this.save()}
-                    data-cy="btn-save"
-                  >
-                    Finalizar compra
-                  </Button>
+                  {items.length > 0 && creditCard.length > 0 ? (
+                    <Button
+                      variant="outline-success"
+                      onClick={() => this.save()}
+                      data-cy="btn-save"
+                    >
+                      Finalizar compra
+                    </Button>
+                  ) : (
+                    <div></div>
+                  )}
                 </div>
               </div>
             </Grid>
@@ -268,7 +286,15 @@ const mapStateToProps = (state) => ({
 });
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
-    { removeItem, configQuantity, selectCoupon, cleanCart, cleanCoupon, updateUser },
+    {
+      removeItem,
+      configQuantity,
+      selectCoupon,
+      cleanCart,
+      cleanCoupon,
+      updateUser,
+      removeCard
+    },
     dispatch
   );
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);

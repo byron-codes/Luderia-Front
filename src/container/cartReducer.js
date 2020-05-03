@@ -2,17 +2,22 @@ const INITIAL_STATE = {
   items: [],
   total: 0,
   forceUpdate: false,
-  freight: 0
+  freight: 0,
 };
 
-export default function(state = INITIAL_STATE, action) {
+export default function (state = INITIAL_STATE, action) {
   state.forceUpdate = !state.forceUpdate;
-  const id = action.payload && action.payload.item ? action.payload.item.id : 0
+  let id = 0;
+  if (action.payload && action.payload.id) {
+    id = action.payload.id;
+  } else if (action.payload && action.payload.item) {
+    id = action.payload.item.id;
+  }
   const index = indexById(id || 0, state);
   const items = state.items;
   switch (action.type) {
     case "CART_ADD":
-      debugger
+      debugger;
       if (index !== undefined) {
         const final = items[index].quantity + parseInt(action.payload.quantity);
         items[index].quantity =
@@ -22,7 +27,7 @@ export default function(state = INITIAL_STATE, action) {
       } else {
         items.push({
           ...action.payload.item,
-          quantity: parseInt(action.payload.quantity)
+          quantity: parseInt(action.payload.quantity),
         });
       }
 
@@ -48,6 +53,7 @@ export default function(state = INITIAL_STATE, action) {
 }
 
 function indexById(id, state) {
+  debugger;
   for (var i = 0; i < state.items.length; i++) {
     if (state.items[i].id === id) {
       return i;
@@ -58,7 +64,7 @@ function indexById(id, state) {
 
 function calculateTotal(state) {
   let total = 0;
-  state.items.map(item => {
+  state.items.map((item) => {
     total = total + item.value * item.quantity;
   });
   return total;

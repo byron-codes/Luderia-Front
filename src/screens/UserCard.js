@@ -44,9 +44,9 @@ class UserCard extends Component {
   }
 
   getCard() {
-    axios.get(`${baseURL}/credit-card`).then(
+    axios.get(`${baseURL}/user/${this.props.user.id}`).then(
       result => {
-        this.setState({ cards: result.data });
+        this.setState({ cards: result.data.creditCards });
       },
       error => console.log(error)
     );
@@ -75,7 +75,7 @@ class UserCard extends Component {
       result =>
         axios
           .put(
-            `${baseURL}/user/${this.props.match.params.id}/card/${result.data.id}`
+            `${baseURL}/user/${this.props.user.id}/card/${result.data.id}`
           )
           .then(resultUser =>
             swal(
@@ -214,6 +214,9 @@ class UserCard extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ selectCard }, dispatch);
-export default connect(null, mapDispatchToProps)(UserCard);
+export default connect(mapStateToProps, mapDispatchToProps)(UserCard);

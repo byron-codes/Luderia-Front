@@ -75,7 +75,9 @@ export default class Cart extends Component {
                       <label>Data da compra</label>
                     </Grid>
                     <Grid cols="6 6 6 6" class="d-flex justify-content-end">
-                      <label>{convertDate(this.state.creationDate, true)}</label>
+                      <label>
+                        {convertDate(this.state.creationDate, true)}
+                      </label>
                     </Grid>
                   </Row>
                   <Row>
@@ -126,20 +128,26 @@ export default class Cart extends Component {
                   </Row>
                 </div>
                 <div className="card-body p-0">
-                  <SmallBox
-                    title={`XXXX XXXX XXXX ${
-                      this.state.creditCard.number
-                        ? this.state.creditCard.number.substr(12)
-                        : "XXXX"
-                    }`}
-                    text={this.state.creditCard.name}
-                    icon="far fa-credit-card marsala-icon"
-                    nohref
-                    class="m-0"
-                    color="m-0 card-sale"
-                    aclass="marsala-box"
-                    href="/cart/card"
-                  ></SmallBox>
+                  {this.state.creditCard.length > 0 ? (
+                    this.state.creditCard.map((creditCard) => {
+                      return (
+                        <SmallBox
+                          title={`XXXX XXXX XXXX ${creditCard.number.substr(
+                            12
+                          )}`}
+                          text={creditCard.name}
+                          icon="far fa-credit-card marsala-icon"
+                          nohref
+                          class="correct-card"
+                          color="m-0 card-sale"
+                          aclass="marsala-box"
+                          href="/cart/card"
+                        ></SmallBox>
+                      );
+                    })
+                  ) : (
+                    <div></div>
+                  )}
                   <SmallBox
                     title={`${this.state.address.street}, ${this.state.address.number}`}
                     text={this.state.address.neighborhood}
