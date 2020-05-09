@@ -65,7 +65,7 @@ describe("Venda", () => {
     cy.get("[data-cy=card-name]").type(
       `${generateString(4)} ${generateString(5)}`
     );
-    cy.get("[data-cy=card-valid]").type(generateNumber(4));
+    cy.get("[data-cy=card-valid]").type("1212");
     cy.get("[data-cy=card-cvv]").type(generateNumber(3));
     cy.get("[data-cy=btn-save]").click();
     cy.wait(3000);
@@ -121,7 +121,7 @@ describe("Venda", () => {
     cy.get("[data-cy=quantity]").clear();
     cy.get("[data-cy=quantity]").type("2");
     cy.get("[data-cy=reason]").type("{downarrow}{downarrow}{downarrow}{enter}");
-    cy.get("[data-cy=description]").type("2");
+    cy.get("[data-cy=description]").type(generateString(10));
     cy.get("[data-cy=btn-add]").click();
     cy.wait(3000);
     cy.get("[data-cy=btn-save-change]").click();

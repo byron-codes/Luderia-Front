@@ -10,20 +10,13 @@ import Select from "react-select";
 import LineChart, { generateChart } from "../components/Chart/LineChart";
 import axios from "axios";
 import { baseURL } from "../endpoints";
+import ReactDatePicker from "react-datepicker";
+import LabelAndInput from "../components/Field/LabelAndInput";
 
-const labels = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
+const type = [
+  { value: "DAILY", label: "Diário" },
+  { value: "MONTHLY", label: "Mensal" },
+  { value: "YEARLY", label: "Anual" },
 ];
 
 const datasetsItems = [
@@ -73,11 +66,23 @@ export default class Reports extends Component {
       value: new Date().getFullYear().toString(),
       label: new Date().getFullYear().toString(),
     },
+    items: {
+      startDate: "2020-01-01",
+      endDate: "2020-01-01",
+      type: { value: "DAILY", label: "Diário" },
+    },
+    errors: {
+      startDate: [],
+      endDate: [],
+    },
   };
+
+  labels = [];
 
   constructor(props) {
     super(props);
     this.getChart = this.getChart.bind(this);
+    this.setAttr = this.setAttr.bind(this);
   }
 
   componentWillMount() {
@@ -86,54 +91,103 @@ export default class Reports extends Component {
       years.push({ value: i.toString(), label: i.toString() });
       this.setState({ ...this.state, years });
     }
-    this.getChart(new Date().getFullYear().toString());
+    this.getChart(this.state.items.startDate, this.state.items.endDate, this.state.items.type.value);
   }
 
   forList(item) {
     let list = [];
+    this.labels = [];
     for (let i in item) {
+      this.labels.push(i);
       list.push(item[i]);
     }
     return list;
   }
 
-  getChart(year) {
-    axios.get(`${baseURL}/report/item-type?year=${year}`).then((result) => {
-      for (let item in result.data) {
-        switch (result.data[item].name) {
-          case "GAME":
-            datasetsItems[0].data = this.forList(result.data[item].values);
-          case "EXPANSION":
-            datasetsItems[1].data = this.forList(result.data[item].values);
-          case "ACCESSORIES":
-            datasetsItems[2].data = this.forList(result.data[item].values);
-        }
-      }
-
-      generateChart("salesType", "Tipo de venda anuais", labels, datasetsItems);
+  setAttr(target, value) {
+    const temp = this.state;
+    temp.items[target] = value;
+    this.setState({
+      ...temp,
     });
+  }
 
-    axios.get(`${baseURL}/report/sale-change?year=${year}`).then((result) => {
-      for (let item in result.data) {
-        switch (result.data[item].name) {
-          case "SALE":
-            datasetsSalesChange[0].data = this.forList(
-              result.data[item].values
-            );
-          case "CHANGE":
-            datasetsSalesChange[1].data = this.forList(
-              result.data[item].values
-            );
+  getChart(startDate, endDate, type) {
+    console.log(startDate, endDate, type);
+    axios
+      .get(
+        `${baseURL}/report/item-type/period?startDate=${startDate}&endDate=${endDate}&type=${type}`
+      )
+      .then(
+        (result) => {
+          for (let item in result.data) {
+            switch (result.data[item].name) {
+              case "GAME":
+                datasetsItems[0].data = this.forList(result.data[item].values);
+                break;
+              case "EXPANSION":
+                datasetsItems[1].data = this.forList(result.data[item].values);
+                break;
+              case "ACCESSORIES":
+                datasetsItems[2].data = this.forList(result.data[item].values);
+                break;
+            }
+          }
+
+          generateChart(
+            "salesType",
+            "Tipo de venda anuais",
+            this.labels,
+            datasetsItems
+          );
+        },
+        (error) => {
+          error.response.data.errors.map((error) => {
+            this.state.errors[error.field].push(error.defaultMessage);
+            this.setState({
+              ...this.state,
+            });
+          });
         }
-      }
-
-      generateChart(
-        "salesChange",
-        "Vendas e trocas anuais",
-        labels,
-        datasetsSalesChange
       );
-    });
+
+    axios
+      .get(
+        `${baseURL}/report/sale-change/period?startDate=${startDate}&endDate=${endDate}&type=${type}`
+      )
+      .then(
+        (result) => {
+          for (let item in result.data) {
+            switch (result.data[item].name) {
+              case "SALE":
+                datasetsSalesChange[0].data = this.forList(
+                  result.data[item].values
+                );
+                break;
+              case "CHANGE":
+                datasetsSalesChange[1].data = this.forList(
+                  result.data[item].values
+                );
+                break;
+            }
+          }
+
+          generateChart(
+            "salesChange",
+            "Vendas e trocas anuais",
+            this.labels,
+            datasetsSalesChange
+          );
+        },
+        (error) => {
+          error.response.data.errors.map((error) => {
+            this.state.errors[error.field].push(error.defaultMessage);
+            this.setState({
+              ...this.state,
+            });
+          });
+        }
+      );
   }
 
   render() {
@@ -146,18 +200,63 @@ export default class Reports extends Component {
             <Row className="d-flex justify-content-center">
               <Grid cols="4 4 4 4">
                 <Grid cols="12 12 12 12" class="text-center">
-                  <label>Ano do realtório</label>
+                  <label>Período do realtório</label>
                 </Grid>
-                <Select
-                  options={this.state.years}
-                  placeholder="Selecione..."
-                  value={this.state.selected}
-                  isSearchable
-                  onChange={(item) => {
-                    this.setState({ ...this.state, selected: item });
-                    this.getChart(item.value);
-                  }}
-                />
+              </Grid>
+              <Grid cols="12 12 12 12">
+                <Row>
+                  <Grid cols="6 6 6 6" class="d-flex justify-content-center">
+                    <LabelAndInput
+                      name="startDate"
+                      cols="12 6"
+                      label="Data inicial"
+                      type="date"
+                      value={this.state.items.startDate}
+                      errors={this.state.errors.startDate}
+                      onChange={this.setAttr}
+                    ></LabelAndInput>
+                    <LabelAndInput
+                      name="endDate"
+                      cols="12 6"
+                      label="Data inicial"
+                      type="date"
+                      value={this.state.items.endDate}
+                      errors={this.state.errors.startDate}
+                      onChange={this.setAttr}
+                    ></LabelAndInput>
+                  </Grid>
+                  <Grid cols="6 6 6 6" class="d-flex justify-content-center">
+                    <Grid cols="6 6 6 6">
+                      <label>Tipo do relatório</label>
+                      <Select
+                        options={type}
+                        placeholder="Selecione..."
+                        value={this.state.items.type}
+                        onChange={(item) => {
+                          this.state.items.type = item;
+                          this.setState({
+                            ...this.state,
+                          });
+                        }}
+                      />
+                    </Grid>
+                    <Grid cols="6 6 6 6">
+                      <div className="pt-2-rem">
+                        <Button
+                          onClick={() => {
+                            this.getChart(
+                              this.state.items.startDate,
+                              this.state.items.endDate,
+                              this.state.items.type.value
+                            );
+                          }}
+                        >
+                          Pesquisar
+                        </Button>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Row>
               </Grid>
               <Grid cols="12 12 12 12">
                 <LineChart id="salesType"></LineChart>

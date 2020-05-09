@@ -98,3 +98,7 @@ td:hover {
 .dashboard-card-title {
   font-size: 24px;
 }
+
+.pt-2-rem {
+  padding-top: 2rem !important;
+}
