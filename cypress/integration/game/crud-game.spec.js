@@ -23,6 +23,7 @@ describe("Jogo", () => {
     cy.get("[data-cy=level]").type("{downarrow}{downarrow}{downarrow}{enter}");
     cy.get("input[type=file]").uploadFile("logo.png", "image/png");
     cy.get("[data-cy=btn-save]").click();
+    cy.wait(5000);
     cy.get('input[id="gameId"]')
       .invoke("val")
       .then(sometext => (gameId = sometext));

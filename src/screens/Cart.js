@@ -219,7 +219,7 @@ class Cart extends Component {
                     actionText="Trocar endereço"
                     color="m-0"
                     aclass="blue-box"
-                    href="/user/0/addresses"
+                    href={`/user/${user.id}/addresses/cart`}
                     dataCy="change-address"
                     class="m-0"
                   ></SmallBox>
@@ -245,7 +245,7 @@ class Cart extends Component {
                   >
                     <a
                       className="small-box-footer mouse-click text-white"
-                      href="/user/0/cards"
+                      href={`/user/${user.id}/cards/cart`}
                     >
                       Adicionar novo cartão
                       <i className="ml-1 fas fa-arrow-circle-right"></i>

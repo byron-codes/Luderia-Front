@@ -12,6 +12,8 @@ import Item from "./screens/Item";
 import Cart from "./screens/Cart";
 import BuyCard from "./screens/UserCard";
 import BuyAddress from "./screens/UserAddress";
+import Card from "./screens/UserCardC";
+import Address from "./screens/UserAddressC";
 import Coupon from "./screens/Cupon";
 import CouponList from "./screens/CouponList";
 import Accessories from "./screens/Accessories";
@@ -41,8 +43,10 @@ export default (props) => (
       <Route path="/itens" component={ItensList} exact></Route>
       <Route path="/itens/:id" component={Item} exact></Route>
       <Route path="/cart" component={Cart} exact></Route>
-      <Route path="/user/:id/cards" component={BuyCard} exact></Route>
-      <Route path="/user/:id/addresses" component={BuyAddress} exact></Route>
+      <Route path="/user/:id/cards/cart" component={BuyCard} exact></Route>
+      <Route path="/user/:id/addresses/cart" component={BuyAddress} exact></Route>
+      <Route path="/user/:id/cards" component={Card} exact></Route>
+      <Route path="/user/:id/addresses" component={Address} exact></Route>
       <Route path="/register" component={Login} exact></Route>
       <Route path="/user/:id/coupon" component={CouponClient} exact></Route>
       <Route path="/sales" component={SalesClient} exact></Route>

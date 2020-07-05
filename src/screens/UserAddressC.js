@@ -149,7 +149,7 @@ class UserAddress extends Component {
                 }
               }
             ).then(result => {
-              window.location = `/user/${this.props.match.params.id}/addresses/cart`;
+              window.location = `/user/${this.props.match.params.id}/addresses`;
             })
           ),
 
@@ -184,7 +184,7 @@ class UserAddress extends Component {
                     {this.state.addresses.map(address => {
                       return (
                         <Grid cols="3 3 3 3" key={address.id}>
-                          <SmallBox
+                          {/* <SmallBox
                             title={`${address.street}, ${address.number}`}
                             text={address.neighborhood}
                             subText={`${address.city.name} - ${address.state.initials}`}
@@ -202,8 +202,8 @@ class UserAddress extends Component {
                             iconDataCy={`address-${address.id}`}
                             actionText="Selecionar endereço"
                             dataCy="address-select"
-                          />
-                          {/* <ItemBox
+                          /> */}
+                          <ItemBox
                             title={`${address.street}, ${address.number}`}
                             text={address.neighborhood}
                             subText={`${address.city.name} - ${address.state.initials}`}
@@ -212,7 +212,7 @@ class UserAddress extends Component {
                             id={address.id}
                             onClick={this.delete}
                             iconDataCy={`address-${address.id}`}
-                          ></ItemBox> */}
+                          ></ItemBox>
                         </Grid>
                       );
                     })}

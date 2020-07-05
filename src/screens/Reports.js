@@ -91,7 +91,11 @@ export default class Reports extends Component {
       years.push({ value: i.toString(), label: i.toString() });
       this.setState({ ...this.state, years });
     }
-    this.getChart(this.state.items.startDate, this.state.items.endDate, this.state.items.type.value);
+    this.getChart(
+      this.state.items.startDate,
+      this.state.items.endDate,
+      this.state.items.type.value
+    );
   }
 
   forList(item) {
@@ -208,6 +212,7 @@ export default class Reports extends Component {
                   <Grid cols="6 6 6 6" class="d-flex justify-content-center">
                     <LabelAndInput
                       name="startDate"
+                      dataCy="startDate"
                       cols="12 6"
                       label="Data inicial"
                       type="date"
@@ -217,6 +222,7 @@ export default class Reports extends Component {
                     ></LabelAndInput>
                     <LabelAndInput
                       name="endDate"
+                      dataCy="endDate"
                       cols="12 6"
                       label="Data inicial"
                       type="date"
@@ -228,17 +234,19 @@ export default class Reports extends Component {
                   <Grid cols="6 6 6 6" class="d-flex justify-content-center">
                     <Grid cols="6 6 6 6">
                       <label>Tipo do relatório</label>
-                      <Select
-                        options={type}
-                        placeholder="Selecione..."
-                        value={this.state.items.type}
-                        onChange={(item) => {
-                          this.state.items.type = item;
-                          this.setState({
-                            ...this.state,
-                          });
-                        }}
-                      />
+                      <div data-cy="reportType">
+                        <Select
+                          options={type}
+                          placeholder="Selecione..."
+                          value={this.state.items.type}
+                          onChange={(item) => {
+                            this.state.items.type = item;
+                            this.setState({
+                              ...this.state,
+                            });
+                          }}
+                        />
+                      </div>
                     </Grid>
                     <Grid cols="6 6 6 6">
                       <div className="pt-2-rem">
@@ -250,6 +258,7 @@ export default class Reports extends Component {
                               this.state.items.type.value
                             );
                           }}
+                          data-cy="btn-report"
                         >
                           Pesquisar
                         </Button>

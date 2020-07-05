@@ -56,6 +56,15 @@ describe("Usuário", () => {
     return ("" + aleat).padStart(3, "0");
   }
 
+  function login() {
+    cy.visit("/");
+    cy.get("[data-cy=user-picture]").click();
+    cy.get("[data-cy=login]").type(nickname);
+    cy.get("[data-cy=password]").type("qwer1234");
+    cy.get("[data-cy=btn-login]").click();
+    cy.wait(2000);
+  }
+
   it("CREATE", () => {
     nickname = generateString(10);
     cy.visit("/register");
@@ -94,6 +103,7 @@ describe("Usuário", () => {
     cy.wait(3000);
   });
   it("UPDATE", () => {
+    login();
     cy.visit(`/user/${userId}`);
     cy.get("[data-cy=name]").clear();
     cy.get("[data-cy=name]").type("nome do usuario");
@@ -104,12 +114,14 @@ describe("Usuário", () => {
     cy.get(".swal-button").click();
   });
   it("CREATE CREDIT CARD", () => {
+    login();
     cy.visit(`/user/${userId}/cards`);
     cy.get("[data-cy=card-number]").type(generateNumber(16));
     cy.get("[data-cy=card-name]").type(generateString(12));
     cy.get("[data-cy=card-valid]").type("0126");
     cy.get("[data-cy=card-cvv]").type(generateNumber(3));
     cy.get("[data-cy=btn-save]").click();
+    cy.wait(3000);
     cy.get('input[id="cardSavedId"]')
       .invoke("val")
       .then(sometext => (cardId = sometext));
@@ -118,12 +130,15 @@ describe("Usuário", () => {
     cy.wait(5000);
   });
   it("DELETE CREDIT CARD", () => {
+    login();
+    cy.visit(`/user/${userId}/cards`);
     cy.get(`[data-cy=card-${cardId}]`).click();
     cy.wait(3000);
     cy.get(".swal-button").click();
     cy.wait(3000);
   });
   it("CREATE ADDRESS", () => {
+    login();
     cy.visit(`/user/${userId}/addresses`);
     cy.get("[data-cy=cep]").type("08552400");
     cy.wait(3000);
@@ -137,12 +152,15 @@ describe("Usuário", () => {
     cy.wait(5000);
   });
   it("DELETE ADDRESS", () => {
+    login();
+    cy.visit(`/user/${userId}/addresses`);
     cy.get(`[data-cy=address-${addressId}]`).click();
     cy.wait(3000);
     cy.get(".swal-button").click();
     cy.wait(3000);
   });
   it("DELETE", () => {
+    login();
     cy.visit(`/user/${userId}`);
     cy.wait(1000);
     cy.get("[data-cy=btn-delete]").click();

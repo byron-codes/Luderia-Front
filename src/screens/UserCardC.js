@@ -93,7 +93,7 @@ class UserCard extends Component {
                 }
               }
             ).then(result => {
-              window.location = `/user/${this.props.match.params.id}/cards/cart`;
+              window.location = `/user/${this.props.match.params.id}/cards`;
             })
           ),
 
@@ -113,7 +113,7 @@ class UserCard extends Component {
                   <div className="row mb-3">
                     {this.state.cards.map(card => (
                       <Grid cols="3 3 3 3" key={card.id}>
-                        <SmallBox
+                        {/* <SmallBox
                           title={`XXXX XXXX XXXX ${card.number.substr(12)}`}
                           text={card.name}
                           subText={`${card.expirationDate.slice(
@@ -131,8 +131,8 @@ class UserCard extends Component {
                           iconDataCy={`card-${card.id}`}
                           actionText="Selecionar cartão"
                           dataCy="card-select"
-                        />
-                        {/* <ItemBox
+                        /> */}
+                        <ItemBox
                           title={`XXXX XXXX XXXX ${card.number.substr(12)}`}
                           text={card.name}
                           subText={`${card.expirationDate.slice(0, 2)}/${card.expirationDate.slice(2, 4)}`}
@@ -141,7 +141,7 @@ class UserCard extends Component {
                           id={card.id}
                           onClick={this.delete}
                           iconDataCy={`card-${card.id}`}
-                        ></ItemBox> */}
+                        ></ItemBox>
                       </Grid>
                     ))}
                   </div>

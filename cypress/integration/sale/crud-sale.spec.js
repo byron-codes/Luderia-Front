@@ -57,7 +57,7 @@ describe("Venda", () => {
     cy.wait(2000);
     cy.get("[data-cy=change-address]").click();
     cy.wait(2000);
-    cy.get("[data-cy=address-select]").click();
+    cy.get(':nth-child(1) > .small-box > [data-cy=address-select]').click();
     cy.wait(2000);
     cy.get(".card-body > .text-center").click();
     cy.wait(2000);

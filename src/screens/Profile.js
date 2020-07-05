@@ -11,6 +11,9 @@ import { baseURL } from "../endpoints";
 import axios from "axios";
 import { cpfMask } from "../mask";
 import { doubleToReal } from "../util/converters";
+import { connect } from "react-redux";
+import { logout } from "../container/userActions";
+import { bindActionCreators } from "redux";
 
 const initialState = {
   items: {
@@ -22,7 +25,7 @@ const initialState = {
     confirmPassword: "",
     oldPassword: "",
     newPassword: "",
-    balance: 0
+    balance: 0,
   },
   errors: {
     name: [],
@@ -34,7 +37,7 @@ const initialState = {
   },
 };
 
-export default class Cart extends Component {
+class Profile extends Component {
   state = { ...initialState };
   constructor(props) {
     super(props);
@@ -118,7 +121,7 @@ export default class Cart extends Component {
   get() {
     axios.get(`${baseURL}/user/${this.props.match.params.id}`).then(
       (result) => {
-        debugger
+        debugger;
         this.setState({ items: result.data });
         this.state.items.cpf = cpfMask(this.state.items.cpf);
         this.setState({ ...this.state });
@@ -128,6 +131,7 @@ export default class Cart extends Component {
   }
 
   render() {
+    const { logout } = this.props;
     return (
       <React.Fragment>
         <NavBar></NavBar>
@@ -145,7 +149,9 @@ export default class Cart extends Component {
                       </Row>
                       <Row>
                         <Grid cols="12 12 12 12">
-                          <label>{doubleToReal(this.state.items.balance)}</label>
+                          <label>
+                            {doubleToReal(this.state.items.balance)}
+                          </label>
                         </Grid>
                       </Row>
                     </Container>
@@ -172,7 +178,10 @@ export default class Cart extends Component {
                                 "Sucesso",
                                 "Sua conta foi fechada com sucesso",
                                 "success"
-                              ).then((result) => (window.location = "/")),
+                              ).then((result) => {
+                                logout();
+                                window.location = "/";
+                              }),
                             (error) => console.log(error)
                           )
                       }
@@ -304,3 +313,7 @@ export default class Cart extends Component {
     );
   }
 }
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({ logout }, dispatch);
+export default connect(null, mapDispatchToProps)(Profile);

@@ -82,9 +82,16 @@ export default class Cupon extends Component {
 
     axios.post(`${baseURL}/coupon`, body).then(
       (result) =>
-        swal("Sucesso", "O seu cadastro foi salvo com sucesso", "success").then(
-          (result) => (window.location = `/admin/coupons`)
-        ),
+        swal("Sucesso", "O seu cadastro foi salvo com sucesso", "success", {
+          content: {
+            element: "input",
+            attributes: {
+              type: "hidden",
+              value: result.data.id,
+              id: "couponId",
+            },
+          },
+        }).then((result) => (window.location = `/admin/coupons`)),
       (error) => {
         error.response.data.errors.map((error) => {
           this.state.items.value = realMask(this.state.items.value + "");
